@@ -1,9 +1,12 @@
-/* Benjy Stone — hero 2D canvas fallback: dusk settling into night
-   Alpine blue-hour atmosphere without WebGL: an evening-sky gradient,
-   a staggered starfield fading in gradually, layered mist/cloud blobs
-   drifting independently with scroll parallax per depth, a soft
-   cobalt-tinted horizon glow (light source only), and a drifting
-   ivory snow/starlight field. Vanilla canvas, no libraries. */
+/* Benjy Stone — hero 2D canvas fallback: assembly / hold / explode
+   Simplified, screen-space version of the WebGL particle sequence for
+   browsers without WebGL: a few hundred small triangles drift in from a
+   scattered field, assemble into a globe (traced as meridian/parallel
+   lines, flattened into 2D), hold, then burst outward with real
+   per-particle velocity and drag before settling into the ambient drift —
+   then gather again. Green, amber, dark blue particles. Particle count kept
+   low deliberately; this path exists for weak or incompatible browsers.
+   Vanilla canvas, no libraries. */
 
 (function () {
   'use strict';
@@ -18,7 +21,9 @@
   const mobile = window.matchMedia('(max-width: 768px)').matches;
 
   const IVORY = '237, 237, 243';
-  const COBALT = '82, 102, 235';
+  const GREEN = '52, 211, 153';
+  const AMBER = '251, 146, 60';
+  const DARKBLUE = '30, 64, 175';
 
   let W, H;
 
@@ -84,8 +89,120 @@
     return stars;
   }
 
-  const starsFar = makeStars(mobile ? 60 : 150, 0.6, 1.6, 7, 0.3, 0.75);
-  const starsHero = makeStars(mobile ? 2 : 6, 2, 3, 6.5, 0.8, 1);
+  const starsFar = makeStars(mobile ? 40 : 90, 0.6, 1.6, 7, 0.25, 0.55);
+  const starsHero = makeStars(mobile ? 1 : 3, 2, 3, 6.5, 0.7, 0.9);
+
+  /* ---------- the signature moment: particles assemble into a globe ---------- */
+
+  const SHAPE_CENTER = { x: 0.6, y: 0.5 };
+  const N = mobile ? 150 : 360;
+
+  // Flat approximation of a wireframe globe: particles trace a handful of
+  // vertical "meridian" ellipses (width varies by longitude, so ones facing
+  // the viewer are wide and ones near the edge are thin) and horizontal
+  // "parallel" ellipses (flattened, to suggest curvature) instead of
+  // filling a disc — that reads as "globe," not just "circle."
+  function sampleGlobe() {
+    const R = 0.15;
+    const MERIDIANS = 14;
+    const PARALLELS = 9;
+    let x, y;
+    if (rand() < 0.55) {
+      const idx = Math.floor(rand() * MERIDIANS);
+      const w = Math.abs(Math.cos((idx / MERIDIANS) * Math.PI));
+      const a = rand() * Math.PI * 2;
+      x = R * w * Math.sin(a);
+      y = R * Math.cos(a);
+    } else {
+      const band = Math.floor(rand() * PARALLELS) + 1;
+      const lat = (band / (PARALLELS + 1) - 0.5) * Math.PI;
+      const cy = R * Math.sin(lat);
+      const rx = R * Math.cos(lat);
+      const a = rand() * Math.PI * 2;
+      x = rx * Math.cos(a);
+      y = cy + rx * Math.sin(a) * 0.3;
+    }
+    return { x: x, y: y };
+  }
+
+  const particles = [];
+  for (let i = 0; i < N; i++) {
+    const roll = rand();
+    const hot = roll > 0.88;
+    const color = roll > 0.68 ? DARKBLUE : roll > 0.32 ? AMBER : GREEN;
+    const shape = sampleGlobe();
+    particles.push({
+      x: rand() * 1.4 - 0.2, y: rand() * 1.1 - 0.05,
+      cx: 0, cy: 0,
+      tx: SHAPE_CENTER.x + shape.x, ty: SHAPE_CENTER.y + shape.y,
+      vx: 0, vy: 0,
+      color: color, hot: hot,
+      size: hot ? 1.9 + rand() * 0.8 : 1.0 + rand() * 0.9,
+      spin: rand() * Math.PI * 2, spinVel: (rand() - 0.5) * (hot ? 2.4 : 1),
+      phaseOffset: (rand() - 0.5) * 0.7,
+      burstInit: false, burstCycle: -1,
+    });
+    particles[i].cx = particles[i].x; particles[i].cy = particles[i].y;
+  }
+
+  const CYCLE = 13.5, ASSEMBLE_END = 4.2, HOLD_END = 6.6, EXPLODE_END = 7.6;
+  let cycleStart = 0;
+
+  function drawParticleField(t) {
+    let ct = t - cycleStart;
+    if (ct > CYCLE) {
+      cycleStart = t - (ct % CYCLE);
+      ct = t - cycleStart;
+      for (const p of particles) { p.cx = p.x; p.cy = p.y; }
+    }
+
+    for (const p of particles) {
+      const localT = ct + p.phaseOffset;
+
+      if (localT < ASSEMBLE_END) {
+        const prog = easeOutCubic(clamp01(localT / ASSEMBLE_END));
+        p.x = p.cx + (p.tx - p.cx) * prog;
+        p.y = p.cy + (p.ty - p.cy) * prog;
+        p.vx = 0; p.vy = 0;
+      } else if (localT < HOLD_END) {
+        p.x = p.tx + Math.cos(t * 1.7 + p.spin) * 0.0015;
+        p.y = p.ty + Math.sin(t * 2.2 + p.spin) * 0.002;
+      } else if (localT < EXPLODE_END) {
+        if (!p.burstInit || p.burstCycle !== cycleStart) {
+          const dx = p.tx - SHAPE_CENTER.x, dy = p.ty - SHAPE_CENTER.y;
+          const dl = Math.hypot(dx, dy) || 1;
+          const speed = (p.hot ? 0.34 : 0.2) + rand() * (p.hot ? 0.22 : 0.14);
+          p.vx = (dx / dl) * speed + (rand() - 0.5) * 0.08;
+          p.vy = (dy / dl) * speed + (rand() - 0.5) * 0.08;
+          p.burstInit = true; p.burstCycle = cycleStart;
+        }
+        p.x += p.vx * 0.016; p.y += p.vy * 0.016;
+        p.vx *= 0.965; p.vy *= 0.965;
+      } else {
+        p.x += p.vx * 0.016; p.y += p.vy * 0.016;
+        p.vx *= 0.983; p.vy *= 0.983; p.vy += 0.0006;
+        p.burstInit = false;
+      }
+      p.spin += p.spinVel * 0.016;
+
+      const px = p.x * W, py = p.y * H;
+      const speed = Math.hypot(p.vx, p.vy);
+      const stretch = clamp01(speed / 0.5);
+      ctx.save();
+      ctx.translate(px, py);
+      ctx.rotate(p.spin);
+      const alpha = p.hot ? 0.95 : 0.7;
+      ctx.fillStyle = `rgba(${p.color}, ${alpha})`;
+      const s = p.size * (1 + stretch * 1.4);
+      ctx.beginPath();
+      ctx.moveTo(0, -s);
+      ctx.lineTo(-s * 0.8, s * 0.6);
+      ctx.lineTo(s * 0.8, s * 0.6);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    }
+  }
 
   function drawStars(stars, t) {
     for (const s of stars) {
@@ -112,23 +229,6 @@
     }
   }
 
-  /* ---------- snow/starlight particles ---------- */
-
-  const PARTICLES = mobile ? 46 : 110;
-  const particles = [];
-  function resetParticle(p, initial) {
-    p.x = rand() * W;
-    p.y = initial ? rand() * H : -10;
-    p.v = 0.25 + rand() * 0.6;
-    p.size = 0.8 + rand() * 1.8;
-    p.sway = rand() * Math.PI * 2;
-  }
-  for (let i = 0; i < PARTICLES; i++) {
-    const p = {};
-    resetParticle(p, true);
-    particles.push(p);
-  }
-
   let tmx = 0, tmy = 0, mx = 0, my = 0;
   if (!mobile) {
     window.addEventListener('pointermove', (e) => {
@@ -152,28 +252,13 @@
 
     ctx.clearRect(0, 0, W, H);
 
-    // evening-sky gradient — dusk near the horizon, deep night at the top
-    const sky = ctx.createLinearGradient(0, 0, 0, H);
-    sky.addColorStop(0, '#0c0c14');
-    sky.addColorStop(0.5, '#171721');
-    sky.addColorStop(0.82, '#1e1e2c');
-    sky.addColorStop(1, '#272738');
-    ctx.fillStyle = sky;
+    // black background
+    ctx.fillStyle = '#000000';
     ctx.fillRect(0, 0, W, H);
 
     // stars gradually populate the sky, staggered
     drawStars(starsFar, t);
     drawStars(starsHero, t);
-
-    // horizon glow — the sole cobalt note, purely atmospheric
-    const glowY = H * 0.62;
-    const breathe = 0.4 + Math.sin(t * 0.35) * 0.15;
-    const hg = ctx.createRadialGradient(W * 0.62, glowY, 0, W * 0.62, glowY, Math.max(W, H) * 0.75);
-    hg.addColorStop(0, `rgba(${COBALT}, ${0.22 * breathe})`);
-    hg.addColorStop(0.5, `rgba(${COBALT}, ${0.08 * breathe})`);
-    hg.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.fillStyle = hg;
-    ctx.fillRect(0, 0, W, H);
 
     // cloud layers
     layers.forEach((layer) => {
@@ -193,18 +278,9 @@
       });
     });
 
-    // drifting snow/starlight, additive
+    // the signature moment: particles assemble, hold, explode, drift as ambient field
     ctx.globalCompositeOperation = 'lighter';
-    for (const p of particles) {
-      p.y += p.v;
-      p.x += Math.sin(t * 1.1 + p.sway) * 0.3;
-      if (p.y > H + 10) resetParticle(p, false);
-      const flicker = 0.25 + 0.35 * (0.5 + 0.5 * Math.sin(t * 2.6 + p.sway * 4));
-      ctx.fillStyle = `rgba(${IVORY}, ${flicker})`;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-      ctx.fill();
-    }
+    drawParticleField(t);
     ctx.globalCompositeOperation = 'source-over';
   }
 
@@ -227,7 +303,7 @@
   }
 
   if (reduced) {
-    t = 8;
+    t = ASSEMBLE_END + 1; // settled: shape formed and held, no burst cycling
     drawScene(window.scrollY);
   } else {
     requestAnimationFrame(frame);

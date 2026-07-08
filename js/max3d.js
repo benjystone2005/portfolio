@@ -1,13 +1,14 @@
 /* Benjy Stone — scroll choreography (GSAP + ScrollTrigger)
-   Every page reads as a considered camera move through 3D space:
-   sections swing gently, cards settle in from depth, timeline entries
-   arrive from alternating sides, headline stats resolve into focus,
-   marquees tilt subtly, dividers draw with scroll, a restrained
-   pointer tilt on cards. Tuned for "impressive and bold" without
-   tipping into "gimmicky" — every value here favours composed motion
-   over maximum amplitude. Headline type enters as solid, stable
-   blocks — no per-letter splitting, no ongoing drift — and settles
-   permanently once revealed.
+   Motion is weighted per section by what that content actually is, not
+   applied uniformly. Facts you need to read fast (proof cards, stat
+   cards, timeline bullets, body copy) get quick, minimal entrances —
+   Emil/Jakub restraint, motion that conveys arrival and nothing more,
+   no infinite idle loops on things you're supposed to be reading.
+   Lower-stakes, decorative content (the skills/interests marquee, the
+   cricket-ball reveal) gets more personality — Jhey territory. Section
+   heads get a real but brief arrival moment in between. Headline type
+   enters as solid, stable blocks — no per-letter splitting, no ongoing
+   drift — and settles permanently once revealed.
    Degrades to the CSS reveal system if the CDN fails. */
 
 (function () {
@@ -117,64 +118,57 @@
       .to(sec, { rotationX: -7 * K, z: -80 * K, ease: 'none' });
   });
 
-  /* ================= cards: dramatic flips from depth ================= */
+  /* ================= cards: quick, minimal arrival — this is content, not spectacle ================= */
 
   $$('.card, .stat-card').forEach((el, i) => {
-    // note: no `y` here — the idle float tween owns y
     gsap.from(el, {
-      rotationY: (i % 2 ? 58 : -58) * K,
-      z: -320 * K,
+      y: 22,
+      rotationY: (i % 2 ? 8 : -8) * K,
       opacity: 0,
       transformPerspective: 1200,
-      duration: 1.2,
-      ease: 'power3.out',
+      duration: 0.6,
+      ease: 'power2.out',
       scrollTrigger: { trigger: el, start: 'top 92%' },
     });
   });
 
-  /* ================= timeline entries: fly in from alternating sides ================= */
+  /* ================= timeline entries: brief arrival, not a flight path ================= */
 
   $$('.timeline__entry').forEach((el, i) => {
     gsap.from(el, {
-      rotationY: (i % 2 ? 46 : -46) * K,
-      x: (i % 2 ? 110 : -110) * K,
-      z: -260 * K,
+      x: (i % 2 ? 26 : -26) * K,
       opacity: 0,
-      transformPerspective: 1200,
-      duration: 1.2,
-      ease: 'power3.out',
-      scrollTrigger: { trigger: el, start: 'top 88%' },
+      duration: 0.6,
+      ease: 'power2.out',
+      scrollTrigger: { trigger: el, start: 'top 90%' },
     });
   });
 
-  /* ================= headings: zoom in from deep space ================= */
+  /* ================= headings: a real but brief moment of arrival ================= */
 
   $$('.section__heading, .void-reveal__heading').forEach((el) => {
     gsap.from(el, {
-      z: -380 * K,
-      y: 40,
-      rotationX: 20,
+      z: -300 * K,
+      y: 32,
+      rotationX: 16,
       opacity: 0,
       transformPerspective: 1000,
-      duration: 1.3,
+      duration: 1.1,
       ease: 'expo.out',
       scrollTrigger: { trigger: el, start: 'top 88%' },
     });
   });
 
-  /* ================= body copy: rise from depth ================= */
+  /* ================= body copy: fast fade-rise — this is what recruiters read ================= */
 
   $$('.body-copy').forEach((el) => {
     if (el.closest('.hero')) return; // hero handles its own
     gsap.from(el, {
-      y: 50,
-      z: -120 * K,
-      rotationX: 12,
+      y: 20,
       opacity: 0,
-      transformPerspective: 1000,
-      duration: 1.1,
-      ease: 'power3.out',
-      scrollTrigger: { trigger: el, start: 'top 90%' },
+      duration: 0.7,
+      ease: 'power2.out',
+      scrollTrigger: { trigger: el, start: 'top 92%' },
     });
   });
 
@@ -246,37 +240,22 @@
     });
   });
 
-  /* ================= exaggerated pointer tilt on cards ================= */
+  /* ================= subtle pointer tilt on cards — a hover cue, not a stunt ================= */
 
   if (!mobile) {
     $$('.card, .stat-card, .photo-slot').forEach((el) => {
       const qx = gsap.quickTo(el, 'rotationX', { duration: 0.45, ease: 'power2.out' });
       const qy = gsap.quickTo(el, 'rotationY', { duration: 0.45, ease: 'power2.out' });
-      const qz = gsap.quickTo(el, 'z', { duration: 0.45, ease: 'power2.out' });
       el.addEventListener('pointermove', (e) => {
         const r = el.getBoundingClientRect();
-        qy(((e.clientX - r.left) / r.width - 0.5) * 15);
-        qx(-((e.clientY - r.top) / r.height - 0.5) * 15);
-        qz(36);
+        qy(((e.clientX - r.left) / r.width - 0.5) * 6);
+        qx(-((e.clientY - r.top) / r.height - 0.5) * 6);
       });
       el.addEventListener('pointerleave', () => {
-        qx(0); qy(0); qz(0);
+        qx(0); qy(0);
       });
     });
   }
-
-  /* ================= proof cards float idly (nothing sits still) ================= */
-
-  $$('.card, .stat-card').forEach((el, i) => {
-    gsap.to(el, {
-      y: '+=' + (6 + (i % 3) * 4),
-      duration: 2.2 + (i % 3) * 0.5,
-      yoyo: true,
-      repeat: -1,
-      ease: 'sine.inOut',
-      delay: i * 0.3,
-    });
-  });
 
   window.addEventListener('load', () => ScrollTrigger.refresh());
 })();

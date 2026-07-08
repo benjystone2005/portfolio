@@ -79,28 +79,56 @@
     countObserver.observe(el);
   });
 
-  /* ---------- Live clock (Projects — LWX section) ---------- */
+  /* ---------- Live clock (Projects — LWX section) — a physical dial ---------- */
 
-  const clock = document.querySelector('.clock-pill');
+  const clock = document.querySelector('.analog-clock');
   if (clock) {
-    const hEl = clock.querySelector('[data-clock-h]');
-    const mEl = clock.querySelector('[data-clock-m]');
-    const sEl = clock.querySelector('[data-clock-s]');
-    const colons = clock.querySelectorAll('[data-clock-colon]');
-    const pad = (n) => String(n).padStart(2, '0');
+    const face = clock.querySelector('.analog-clock__face');
+    for (let i = 0; i < 12; i++) {
+      const tick = document.createElement('div');
+      tick.className = 'analog-clock__tick';
+      tick.style.transform = `rotate(${i * 30}deg)`;
+      face.appendChild(tick);
+    }
+
+    const hourHand = clock.querySelector('[data-clock-hour]');
+    const minuteHand = clock.querySelector('[data-clock-minute]');
+    const secondHand = clock.querySelector('[data-clock-second]');
 
     const tickClock = () => {
       const now = new Date();
-      hEl.textContent = pad(now.getHours());
-      mEl.textContent = pad(now.getMinutes());
-      sEl.textContent = pad(now.getSeconds());
+      const s = now.getSeconds() + now.getMilliseconds() / 1000;
+      const m = now.getMinutes() + s / 60;
+      const h = (now.getHours() % 12) + m / 60;
+      secondHand.style.transform = `translateX(-50%) rotate(${s * 6}deg)`;
+      minuteHand.style.transform = `translateX(-50%) rotate(${m * 6}deg)`;
+      hourHand.style.transform = `translateX(-50%) rotate(${h * 30}deg)`;
+      requestAnimationFrame(tickClock);
     };
-    tickClock();
-    setInterval(tickClock, 1000);
+    requestAnimationFrame(tickClock);
+  }
 
-    setInterval(() => {
-      colons.forEach((c) => c.classList.toggle('is-dim'));
-    }, 500);
+  /* ---------- Aeroplane flyover: once per page load, every page ---------- */
+
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const plane = document.createElement('div');
+    plane.className = 'plane-flyover';
+    plane.setAttribute('aria-hidden', 'true');
+    plane.innerHTML =
+      '<svg viewBox="0 0 24 24" width="30" height="30" fill="currentColor">' +
+      '<path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>';
+    document.body.appendChild(plane);
+
+    if (window.gsap) {
+      gsap.set(plane, { left: '-10%', opacity: 0 });
+      gsap.timeline({ delay: 0.8, onComplete: () => plane.remove() })
+        .to(plane, { opacity: 0.85, duration: 0.5 }, 0)
+        .to(plane, { left: '110%', duration: 4.6, ease: 'none' }, 0)
+        .to(plane, { y: '+=14', duration: 2.3, ease: 'sine.inOut', yoyo: true, repeat: 1 }, 0)
+        .to(plane, { opacity: 0, duration: 0.6 }, '-=0.6');
+    } else {
+      plane.remove();
+    }
   }
 
   /* ---------- Memo modal ---------- */

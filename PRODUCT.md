@@ -10,7 +10,7 @@ Investment banking and asset management recruiters, hiring managers, and network
 
 ## Product Purpose
 
-A personal recruiting portfolio for a single candidate, Benjamin Stone (second-year Accounting and Finance, University of Edinburgh, incoming IB intern at Investec). It exists to make his self-directed track record (an index he built and maintains, an equity research memo he wrote unprompted) legible and credible to a skeptical, sophisticated audience, and to drive two actions: connect on LinkedIn, or reach out directly. Success looks like a recruiter remembering this candidate specifically, not "a well-designed site."
+A personal recruiting portfolio for a single candidate, Benjamin Stone (third-year Accounting and Finance, University of Edinburgh, Investment Banking Winter Intern at Investec, August 2026). It exists to make his self-directed track record (an index he built and maintains, an equity research memo he wrote unprompted) legible and credible to a skeptical, sophisticated audience, and to drive two actions: connect on LinkedIn, or reach out directly. Success looks like a recruiter remembering this candidate specifically, not "a well-designed site."
 
 ## Brand Personality
 

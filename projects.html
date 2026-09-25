@@ -5,170 +5,187 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Projects: The Luxury Watch Index &amp; IAG Research | Benjy Stone</title>
   <meta name="description" content="Two self-directed projects by Benjy Stone: an equity research memo on IAG's loyalty accounting, and the Luxury Watch Index, a rules-based market index tracked since November 2025." />
+  <meta name="theme-color" content="#0f4d43" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Inter:wght@100..900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400..600&family=Figtree:wght@400..700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
-  <nav class="site-nav">
-    <a class="site-nav__wordmark" href="index.html">Benjy Stone</a>
-    <button class="nav-toggle" aria-label="Toggle menu">Menu</button>
-    <div class="site-nav__right">
-      <ul class="site-nav__links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="experience.html">Experience</a></li>
-        <li><a href="projects.html" class="active">Projects</a></li>
-        <li><a href="beyond-finance.html">Beyond Finance</a></li>
-      </ul>
-      <a class="btn-pill" href="https://www.linkedin.com/" target="_blank" rel="noopener">Connect on LinkedIn</a>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <nav class="site-nav" aria-label="Main">
+    <div class="wrap site-nav__inner">
+      <a class="site-nav__wordmark" href="index.html">Benjy Stone</a>
+      <button class="nav-toggle" aria-expanded="false" aria-controls="nav-menu">Menu</button>
+      <div class="site-nav__right" id="nav-menu">
+        <ul class="site-nav__links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="experience.html">Experience</a></li>
+          <li><a href="projects.html" aria-current="page">Projects</a></li>
+          <li><a href="beyond-finance.html">Beyond Finance</a></li>
+        </ul>
+        <a class="btn btn--ink btn--sm" href="https://www.linkedin.com/in/benjamin-stone-58511b363" target="_blank" rel="noopener">Connect on LinkedIn</a>
+      </div>
     </div>
   </nav>
 
-  <header class="page-hero">
-    <canvas class="page-hero__scene" aria-hidden="true"></canvas>
-    <h1 class="page-hero__title reveal in-view">Projects</h1>
-    <p class="body-copy page-hero__lede reveal in-view">
-      Two self-directed projects: an equity research memo interrogating a FTSE&nbsp;100
-      company's loyalty accounting, and the Luxury Watch Index, a rules-based market
-      index Benjy built and has tracked consistently since November 2025.
-    </p>
-  </header>
+  <main id="main">
 
-  <hr class="divider reveal-line" />
-
-  <!-- IAG / AVIOS -->
-  <section class="section section--vh">
-    <div style="max-width:1400px;margin:0 auto;width:100%;">
-      <p class="section__kicker reveal">Independent equity research · June 2026</p>
-      <h2 class="section__heading reveal">IAG / Avios: Loyalty Breakage Research Memo</h2>
-      <p class="body-copy reveal" style="max-width:860px;margin-bottom:var(--spacing-45);">
-        Airlines book profit when loyalty points expire unredeemed, an estimate called
-        &ldquo;breakage.&rdquo; This memo asks a simple question the sell side hasn't:
-        how much of IAG's reported profit rests on that assumption, and is anyone checking it?
-      </p>
-
-      <div class="stat-grid reveal-stagger">
-        <div class="stat-card">
-          <p class="stat-card__value">&euro;2,630m &rarr; &euro;<span data-count="3348" data-decimals="0">3,348</span>m</p>
-          <p class="stat-card__label">Avios liability growth over four years, up 27% from 2022 to 2025</p>
-        </div>
-        <div class="stat-card">
-          <p class="stat-card__value">&euro;51m &rarr; &euro;<span data-count="285" data-decimals="0">285</span>m</p>
-          <p class="stat-card__label">Unexplained residual in the liability movement: roughly fourfold growth</p>
-        </div>
-        <div class="stat-card">
-          <p class="stat-card__value">&euro;<span data-count="103" data-decimals="0">103</span>m</p>
-          <p class="stat-card__label">Profit impact of a 5-point shift in the breakage assumption, per IAG's own disclosure</p>
-        </div>
-        <div class="stat-card">
-          <p class="stat-card__value">~<span data-count="14" data-decimals="0">14</span> points</p>
-          <p class="stat-card__label">The assumption shift the 2025 residual is equivalent to (far beyond normal year-on-year variation)</p>
-        </div>
-      </div>
-
-      <p class="body-copy reveal" style="max-width:860px;margin-bottom:var(--spacing-31);">
-        The research didn't produce a confirmed short. Open questions remain, including
-        whether the residual has a legitimate accounting explanation. But that was the
-        point: the value was in the process. Finding a subjective, growing profit lever
-        that analysts treat as an unqualified positive, quantifying its sensitivity from
-        primary disclosures, and knowing when the evidence doesn't yet clear the bar for a trade.
-      </p>
-
-      <button class="btn-ghost reveal" data-open-memo>Read the full memo</button>
-    </div>
-  </section>
-
-  <hr class="divider reveal-line" />
-
-  <!-- LWX — void-mode reveal -->
-  <section class="section section--vh">
-    <div class="void-reveal void-reveal--split">
-      <div class="reveal">
-        <p class="section__kicker">Live market index · Tracked consistently since November 2025</p>
-        <h2 class="void-reveal__heading">The Luxury<br />Watch Index<br />(LWX)</h2>
-        <p class="headline-stat" style="margin-top:var(--spacing-31);">
-          +<span data-count="14.36" data-decimals="2">14.36</span>%
+    <header class="page-head">
+      <div class="wrap">
+        <h1 class="page-head__title">Projects</h1>
+        <p class="page-head__lede">
+          Two projects I&rsquo;ve done outside university: a research memo on how IAG
+          accounts for its Avios loyalty points, and an index of luxury watch resale
+          prices that I&rsquo;ve kept updated since November 2025.
         </p>
-        <p class="micro micro-dim" style="margin-top:var(--spacing-12);">Since the November 2025 base date</p>
+        <ul class="jump" aria-label="On this page">
+          <li class="jump__label">On this page</li>
+          <li><a href="#iag">IAG / Avios memo</a></li>
+          <li><a href="#lwx">Luxury Watch Index</a></li>
+        </ul>
+      </div>
+    </header>
 
-        <div class="analog-clock" style="margin-top:var(--spacing-24);" role="timer" aria-label="Live local time">
-          <div class="analog-clock__face">
-            <div class="analog-clock__hand analog-clock__hand--hour" data-clock-hour></div>
-            <div class="analog-clock__hand analog-clock__hand--minute" data-clock-minute></div>
-            <div class="analog-clock__hand analog-clock__hand--second" data-clock-second></div>
-            <div class="analog-clock__pin"></div>
+    <!-- IAG / AVIOS -->
+    <section class="section section--flush" id="iag" aria-labelledby="iag-title">
+      <div class="wrap">
+        <div class="research">
+          <div class="reveal">
+            <p class="meta">Research memo · June 2026</p>
+            <h2 class="research__title" id="iag-title">IAG / Avios: Loyalty Breakage Research Memo</h2>
+            <div class="prose">
+              <p>
+                When Avios points expire unused, IAG books their value as profit. How much it
+                books depends on an internal estimate called &ldquo;breakage.&rdquo; I hadn&rsquo;t
+                seen analysts look at it closely, so I went through IAG&rsquo;s annual reports to
+                work out how much profit depends on that estimate, and whether anyone checks it.
+              </p>
+            </div>
+            <div class="actions">
+              <a class="btn btn--ink" href="assets/IAG_Short_Thesis_Memo.pdf" target="_blank" rel="noopener">Read the full memo</a>
+              <a class="link" href="assets/IAG_Short_Thesis_Memo.pdf" download>Download PDF</a>
+            </div>
           </div>
-          <span class="micro micro-dim">Local time</span>
+          <a class="paper paper--link reveal" href="assets/IAG_Short_Thesis_Memo.pdf" target="_blank" rel="noopener" aria-label="Open the IAG memo (PDF)">
+            <img src="assets/img/iag-memo-page1.jpg" width="1081" height="1000" alt="First page of the IAG investment memo: short thesis dated 26 June 2026, authored by Benjamin Stone." />
+          </a>
+        </div>
+
+        <ul class="figures reveal" aria-label="Headline findings">
+          <li>
+            <p class="figures__value">&euro;2,630m &rarr; &euro;<span data-count="3348" data-decimals="0">3,348</span>m</p>
+            <p class="figures__label">Growth in the Avios liability from 2022 to 2025, up 27%</p>
+          </li>
+          <li>
+            <p class="figures__value">&euro;51m &rarr; &euro;<span data-count="285" data-decimals="0">285</span>m</p>
+            <p class="figures__label">The part of the liability movement the disclosures don&rsquo;t explain, up roughly fourfold</p>
+          </li>
+          <li>
+            <p class="figures__value">&euro;<span data-count="103" data-decimals="0">103</span>m</p>
+            <p class="figures__label">How much profit moves if the breakage estimate shifts by 5 points, according to IAG</p>
+          </li>
+          <li>
+            <p class="figures__value">~<span data-count="14" data-decimals="0">14</span> points</p>
+            <p class="figures__label">The change in the breakage estimate that would account for the 2025 residual. Normal year-to-year changes are much smaller</p>
+          </li>
+        </ul>
+
+        <div class="prose prose--muted reveal">
+          <p>
+            I didn&rsquo;t end up with a confirmed short. There may still be a legitimate
+            accounting reason for the residual, and I haven&rsquo;t ruled that out. What I got
+            from it was the process: finding a growing, judgement-based number that analysts
+            treat as good news, measuring how much it matters from IAG&rsquo;s own filings, and
+            knowing when the evidence isn&rsquo;t strong enough to trade on.
+          </p>
         </div>
       </div>
+    </section>
 
-      <div class="void-reveal__body reveal">
-        <p class="body-copy" style="margin-bottom:var(--spacing-24);">
-          The Luxury Watch Index is an equally-weighted index tracking secondary market
-          prices across 10 luxury watch references, sourced consistently from Chrono24.
-          Two to three times a month, Benjy calculates the median Ask price for each
-          constituent and normalises it against the base date to produce a composite
-          index: the same discipline, update after update, since launch.
-        </p>
-        <p class="body-copy" style="margin-bottom:var(--spacing-31);">
-          The index lives on an interactive site with live charts, YTD performance and
-          full methodology documentation.
-        </p>
-        <a class="btn-ghost" href="https://benjystone2005.github.io/The-Luxury-Watch-Index/luxury-watch-index.html" target="_blank" rel="noopener">View the live index &rarr;</a>
+    <!-- LWX -->
+    <section class="section section--flush" id="lwx" aria-labelledby="lwx-title">
+      <div class="wrap">
+        <div class="lwx reveal">
+          <div>
+            <p class="meta">Live index · Running since November 2025</p>
+            <h2 class="lwx__title" id="lwx-title">The Luxury Watch Index (LWX)</h2>
+            <div class="lwx__stat">
+              <p class="stat">+<span data-count="14.36" data-decimals="2">14.36</span>%</p>
+              <p class="stat__caption">Since I started it in November 2025</p>
+            </div>
+            <div class="analog-clock" role="timer" aria-label="Live local time">
+              <div class="analog-clock__face">
+                <div class="analog-clock__hand analog-clock__hand--hour" data-clock-hour></div>
+                <div class="analog-clock__hand analog-clock__hand--minute" data-clock-minute></div>
+                <div class="analog-clock__hand analog-clock__hand--second" data-clock-second></div>
+                <div class="analog-clock__pin"></div>
+              </div>
+              <span class="meta">Local time</span>
+            </div>
+          </div>
+
+          <div class="lwx__media">
+            <a class="shot" href="https://benjystone2005.github.io/The-Luxury-Watch-Index/luxury-watch-index.html" target="_blank" rel="noopener" aria-label="Open the live Luxury Watch Index">
+              <img src="assets/img/lwx-live-index.jpg" width="1600" height="1075" loading="lazy" alt="The live Luxury Watch Index site: index value, year-to-date return, ten constituents and the composite performance chart." />
+            </a>
+            <div class="prose">
+              <p>
+                The index follows resale prices for 10 luxury watch models, each weighted
+                equally. Two or three times a month I pull the asking prices for each watch
+                from Chrono24, take the median, and compare it with that watch&rsquo;s price on
+                the start date. The average across all ten gives the index level.
+              </p>
+              <p>
+                The live site has the charts, year-to-date performance and the full methodology.
+              </p>
+            </div>
+            <div class="actions">
+              <a class="btn btn--ink" href="https://benjystone2005.github.io/The-Luxury-Watch-Index/luxury-watch-index.html" target="_blank" rel="noopener">View the live index <span class="arrow" aria-hidden="true">&rarr;</span></a>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <hr class="divider reveal-line" />
-
-  <!-- CLOSING -->
-  <section class="section">
-    <div class="cta-band reveal">
-      <p class="body-copy">
-        Want to talk through the methodology, challenge the thesis, or suggest what to build next?
-      </p>
-      <div class="cta-band__actions">
-        <a class="btn-ghost" href="mailto:Benjystone2005@gmail.com">Email Benjy</a>
-        <a class="link-underline" href="https://www.linkedin.com/" target="_blank" rel="noopener">Connect on LinkedIn</a>
+    <!-- CONTACT -->
+    <section class="contact on-brand" aria-labelledby="contact-title">
+      <div class="wrap contact__inner">
+        <div>
+          <h2 class="contact__title" id="contact-title">Questions about either project?</h2>
+          <p class="contact__text">
+            I&rsquo;m happy to walk through the method, hear why you think the thesis is wrong,
+            or get ideas for what to build next.
+          </p>
+          <div class="actions">
+            <a class="btn btn--light" href="mailto:Benjystone2005@gmail.com">Email Benjy</a>
+            <a class="btn btn--ghost-light" href="https://www.linkedin.com/in/benjamin-stone-58511b363" target="_blank" rel="noopener">Connect on LinkedIn</a>
+          </div>
+        </div>
+        <dl class="contact__details">
+          <div><dt>Email</dt><dd><a href="mailto:Benjystone2005@gmail.com">Benjystone2005@gmail.com</a></dd></div>
+          <div><dt>Phone</dt><dd><a href="tel:+447365353146">+44 7365 353146</a></dd></div>
+          <div><dt>CV</dt><dd><a href="assets/Benjamin_Stone_CV.pdf" download>Download (PDF)</a></dd></div>
+        </dl>
       </div>
-    </div>
-  </section>
+    </section>
+
+  </main>
 
   <footer class="site-footer">
-    <p class="site-footer__name">Benjamin Stone, Accounting &amp; Finance, University of Edinburgh</p>
-    <div class="site-footer__links">
-      <a class="link-underline" href="https://www.linkedin.com/" target="_blank" rel="noopener">Connect on LinkedIn</a>
-      <a class="link-underline" href="assets/Benjamin_Stone_CV.pdf" download>Download CV</a>
-      <a class="link-underline" href="mailto:Benjystone2005@gmail.com">Benjystone2005@gmail.com</a>
-      <span class="micro micro-dim">+44 7365 353146</span>
+    <div class="wrap site-footer__inner">
+      <p><span class="site-footer__name">Benjamin Stone</span> · Accounting &amp; Finance, University of Edinburgh</p>
+      <ul class="site-footer__links">
+        <li><a href="https://www.linkedin.com/in/benjamin-stone-58511b363" target="_blank" rel="noopener">LinkedIn</a></li>
+        <li><a href="assets/Benjamin_Stone_CV.pdf" download>CV</a></li>
+        <li><a href="mailto:Benjystone2005@gmail.com">Email</a></li>
+        <li>Edinburgh, Scotland</li>
+      </ul>
     </div>
-    <p class="legal">* Edinburgh, Scotland</p>
   </footer>
 
-  <!-- MEMO MODAL -->
-  <div class="modal" id="memo-modal" role="dialog" aria-modal="true" aria-label="IAG / Avios research memo">
-    <div class="modal__panel">
-      <button class="modal__close">Close</button>
-      <p class="section__kicker">IAG / Avios: Loyalty Breakage Research Memo</p>
-      <h3 class="section__heading" style="margin-bottom:0;">The Full Memo</h3>
-      <hr class="divider" />
-      <p class="body-copy" style="font-size:18px;">
-        The full memo is below: thesis, disclosures, and the open questions that
-        keep this from being a confirmed short. If you just want the summary, the
-        headline findings are already on this page.
-      </p>
-      <div>
-        <a class="btn-ghost" href="assets/IAG_Short_Thesis_Memo.pdf" download>Download the full memo</a>
-      </div>
-    </div>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
   <script src="js/main.js"></script>
-  <script src="js/max3d.js"></script>
-  <script src="js/ambient3d.js"></script>
 </body>
 </html>

@@ -4,128 +4,132 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Beyond Finance: Benjy Stone | Cricket World Cup Champion</title>
-  <meta name="description" content="Before spreadsheets, Benjy Stone was better known with a cricket bat. He won a World Cup title with South Africa at the 2018 Indoor Cricket World Cup." />
+  <meta name="description" content="Benjy Stone won the 2018 Indoor Cricket World Cup with South Africa and captained his school's first cricket team." />
+  <meta name="theme-color" content="#0f4d43" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Inter:wght@100..900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400..600&family=Figtree:wght@400..700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
-  <nav class="site-nav">
-    <a class="site-nav__wordmark" href="index.html">Benjy Stone</a>
-    <button class="nav-toggle" aria-label="Toggle menu">Menu</button>
-    <div class="site-nav__right">
-      <ul class="site-nav__links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="experience.html">Experience</a></li>
-        <li><a href="projects.html">Projects</a></li>
-        <li><a href="beyond-finance.html" class="active">Beyond Finance</a></li>
-      </ul>
-      <a class="btn-pill" href="https://www.linkedin.com/" target="_blank" rel="noopener">Connect on LinkedIn</a>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <nav class="site-nav" aria-label="Main">
+    <div class="wrap site-nav__inner">
+      <a class="site-nav__wordmark" href="index.html">Benjy Stone</a>
+      <button class="nav-toggle" aria-expanded="false" aria-controls="nav-menu">Menu</button>
+      <div class="site-nav__right" id="nav-menu">
+        <ul class="site-nav__links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="experience.html">Experience</a></li>
+          <li><a href="projects.html">Projects</a></li>
+          <li><a href="beyond-finance.html" aria-current="page">Beyond Finance</a></li>
+        </ul>
+        <a class="btn btn--ink btn--sm" href="https://www.linkedin.com/in/benjamin-stone-58511b363" target="_blank" rel="noopener">Connect on LinkedIn</a>
+      </div>
     </div>
   </nav>
 
-  <header class="page-hero">
-    <canvas class="page-hero__scene" aria-hidden="true"></canvas>
-    <h1 class="page-hero__title reveal in-view">Beyond<br />Finance</h1>
-    <p class="body-copy page-hero__lede reveal in-view">
-      Before spreadsheets, Benjy Stone was better known with a cricket bat,
-      including a World Cup title with South Africa.
-    </p>
-  </header>
+  <main id="main">
 
-  <hr class="divider reveal-line" />
-
-  <!-- WORLD CUP — void-mode reveal -->
-  <section class="section section--vh">
-    <div class="void-reveal">
-      <div class="reveal">
-        <p class="section__kicker">Christchurch, New Zealand · September 2018</p>
-        <h2 class="void-reveal__heading">Indoor Cricket<br />World Cup<br />Champion</h2>
-      </div>
-
-      <div class="void-reveal__object reveal">
-        <div class="cricket-ball" role="img" aria-label="Cricket ball"></div>
-      </div>
-
-      <div class="void-reveal__body reveal">
-        <p class="body-copy" style="margin-bottom:var(--spacing-31);">
-          Selected to represent South Africa at the Indoor Cricket World Cup,
-          and the team finished as World Cup Champions.
+    <header class="page-head">
+      <div class="wrap">
+        <h1 class="page-head__title">Beyond Finance</h1>
+        <p class="page-head__lede">
+          Before finance, most of my time went into cricket. I played for South Africa
+          and captained my school&rsquo;s first team.
         </p>
-        <div class="photo-slot">Photo to follow</div>
       </div>
-    </div>
-  </section>
+    </header>
 
-  <hr class="divider reveal-line" />
-
-  <!-- CAPTAINCY -->
-  <section class="section">
-    <div class="timeline">
-      <article class="timeline__entry reveal">
-        <div class="timeline__meta">
-          <p>2023</p>
-          <p>South Africa</p>
+    <!-- WORLD CUP -->
+    <section class="section section--flush" aria-labelledby="wc-title">
+      <div class="wrap">
+        <div class="trophy reveal">
+          <div>
+            <p class="meta">Christchurch, New Zealand · September 2018</p>
+            <h2 class="trophy__title" id="wc-title">Indoor Cricket World Cup Champion</h2>
+            <div class="prose">
+              <p>
+                I was picked for South Africa&rsquo;s squad at the 2018 Indoor Cricket World Cup
+                in Christchurch, and we won it.
+              </p>
+            </div>
+          </div>
+          <div class="cricket-ball" role="img" aria-label="Cricket ball"></div>
         </div>
-        <div>
-          <h2 class="timeline__role">First Team Cricket Captain</h2>
-          <p class="timeline__org">King David High School Linksfield</p>
-          <ul class="timeline__points">
-            <li>Organised weekly training sessions and matches for a squad of 14 players, leading the team to an undefeated league season</li>
-            <li>Awarded best batsman at the school for the third consecutive year</li>
+      </div>
+    </section>
+
+    <!-- CAPTAINCY + INTERESTS -->
+    <div class="section section--flush">
+      <div class="wrap">
+        <section class="group" aria-labelledby="captain-title">
+          <h2 class="group__title reveal" id="captain-title">Captaincy</h2>
+          <article class="entry reveal">
+            <div class="entry__meta">
+              <p class="entry__when">2023</p>
+              <p class="entry__where">South Africa</p>
+            </div>
+            <div>
+              <h3 class="entry__org">First Team Cricket Captain</h3>
+              <p class="entry__role">King David High School Linksfield</p>
+              <ul class="points">
+                <li>Organised weekly training sessions and matches for a squad of 14 players, leading the team to an undefeated league season</li>
+                <li>Awarded best batsman at the school for the third consecutive year</li>
+              </ul>
+            </div>
+          </article>
+        </section>
+
+        <section class="group" aria-labelledby="interests-title">
+          <h2 class="group__title reveal" id="interests-title">Interests</h2>
+          <ul class="tags reveal">
+            <li>Football</li>
+            <li>Stock Trading</li>
+            <li>Global Affairs</li>
+            <li>Gym</li>
+            <li>Golf</li>
+            <li>Coding</li>
+            <li>AI</li>
           </ul>
-        </div>
-      </article>
-    </div>
-  </section>
-
-  <!-- INTERESTS STRIP -->
-  <div class="marquee" aria-label="Interests">
-    <div class="marquee__track">
-      <span>Football</span><span class="dot">·</span>
-      <span>Stock Trading</span><span class="dot">·</span>
-      <span>Global Affairs</span><span class="dot">·</span>
-      <span>Gym</span><span class="dot">·</span>
-      <span>Golf</span><span class="dot">·</span>
-      <span>Coding</span><span class="dot">·</span>
-      <span>AI</span><span class="dot">·</span>
-      <span>Football</span><span class="dot">·</span>
-      <span>Stock Trading</span><span class="dot">·</span>
-      <span>Global Affairs</span><span class="dot">·</span>
-      <span>Gym</span><span class="dot">·</span>
-      <span>Golf</span><span class="dot">·</span>
-      <span>Coding</span><span class="dot">·</span>
-      <span>AI</span><span class="dot">·</span>
-    </div>
-  </div>
-
-  <!-- PAGE CTA -->
-  <section class="section">
-    <div class="cta-band reveal">
-      <p class="body-copy">The best conversations start somewhere unexpected.</p>
-      <div class="cta-band__actions">
-        <a class="btn-ghost" href="https://www.linkedin.com/" target="_blank" rel="noopener">Connect with Benjy on LinkedIn</a>
+        </section>
       </div>
     </div>
-  </section>
+
+    <!-- CONTACT -->
+    <section class="contact on-brand" aria-labelledby="contact-title">
+      <div class="wrap contact__inner">
+        <div>
+          <h2 class="contact__title" id="contact-title">Happy to talk cricket, football or golf too.</h2>
+          <div class="actions">
+            <a class="btn btn--light" href="https://www.linkedin.com/in/benjamin-stone-58511b363" target="_blank" rel="noopener">Connect on LinkedIn</a>
+            <a class="btn btn--ghost-light" href="mailto:Benjystone2005@gmail.com">Email Benjy</a>
+          </div>
+        </div>
+        <dl class="contact__details">
+          <div><dt>Email</dt><dd><a href="mailto:Benjystone2005@gmail.com">Benjystone2005@gmail.com</a></dd></div>
+          <div><dt>Phone</dt><dd><a href="tel:+447365353146">+44 7365 353146</a></dd></div>
+          <div><dt>CV</dt><dd><a href="assets/Benjamin_Stone_CV.pdf" download>Download (PDF)</a></dd></div>
+        </dl>
+      </div>
+    </section>
+
+  </main>
 
   <footer class="site-footer">
-    <p class="site-footer__name">Benjamin Stone, Accounting &amp; Finance, University of Edinburgh</p>
-    <div class="site-footer__links">
-      <a class="link-underline" href="https://www.linkedin.com/" target="_blank" rel="noopener">Connect on LinkedIn</a>
-      <a class="link-underline" href="assets/Benjamin_Stone_CV.pdf" download>Download CV</a>
-      <a class="link-underline" href="mailto:Benjystone2005@gmail.com">Benjystone2005@gmail.com</a>
-      <span class="micro micro-dim">+44 7365 353146</span>
+    <div class="wrap site-footer__inner">
+      <p><span class="site-footer__name">Benjamin Stone</span> · Accounting &amp; Finance, University of Edinburgh</p>
+      <ul class="site-footer__links">
+        <li><a href="https://www.linkedin.com/in/benjamin-stone-58511b363" target="_blank" rel="noopener">LinkedIn</a></li>
+        <li><a href="assets/Benjamin_Stone_CV.pdf" download>CV</a></li>
+        <li><a href="mailto:Benjystone2005@gmail.com">Email</a></li>
+        <li>Edinburgh, Scotland</li>
+      </ul>
     </div>
-    <p class="legal">* Edinburgh, Scotland</p>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
   <script src="js/main.js"></script>
-  <script src="js/max3d.js"></script>
-  <script src="js/ambient3d.js"></script>
 </body>
 </html>

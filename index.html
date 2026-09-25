@@ -4,117 +4,255 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Benjy Stone | Benjamin Stone, Accounting &amp; Finance, University of Edinburgh</title>
-  <meta name="description" content="Benjamin 'Benjy' Stone is a second-year Accounting and Finance student at the University of Edinburgh who built the Luxury Watch Index. Investment Banking Winter Intern at Investec, August 2026." />
+  <meta name="description" content="Benjamin 'Benjy' Stone is a third-year Accounting and Finance student at the University of Edinburgh who built the Luxury Watch Index. Investment Banking Winter Intern at Investec, August 2026." />
+  <meta name="theme-color" content="#0f4d43" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Inter:wght@100..900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400..600&family=Figtree:wght@400..700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
-  <!-- TODO: replace LinkedIn href with Benjy's profile URL (all pages) -->
-  <nav class="site-nav">
-    <a class="site-nav__wordmark" href="index.html">Benjy Stone</a>
-    <button class="nav-toggle" aria-label="Toggle menu">Menu</button>
-    <div class="site-nav__right">
-      <ul class="site-nav__links">
-        <li><a href="index.html" class="active">Home</a></li>
-        <li><a href="experience.html">Experience</a></li>
-        <li><a href="projects.html">Projects</a></li>
-        <li><a href="beyond-finance.html">Beyond Finance</a></li>
-      </ul>
-      <a class="btn-pill" href="https://www.linkedin.com/" target="_blank" rel="noopener">Connect on LinkedIn</a>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <nav class="site-nav" aria-label="Main">
+    <div class="wrap site-nav__inner">
+      <a class="site-nav__wordmark" href="index.html">Benjy Stone</a>
+      <button class="nav-toggle" aria-expanded="false" aria-controls="nav-menu">Menu</button>
+      <div class="site-nav__right" id="nav-menu">
+        <ul class="site-nav__links">
+          <li><a href="index.html" aria-current="page">Home</a></li>
+          <li><a href="experience.html">Experience</a></li>
+          <li><a href="projects.html">Projects</a></li>
+          <li><a href="beyond-finance.html">Beyond Finance</a></li>
+        </ul>
+        <a class="btn btn--ink btn--sm" href="https://www.linkedin.com/in/benjamin-stone-58511b363" target="_blank" rel="noopener">Connect on LinkedIn</a>
+      </div>
     </div>
   </nav>
 
-  <!-- HERO — 3D market scene -->
-  <header class="hero">
-    <div class="hero__glow" aria-hidden="true"></div>
-    <canvas id="hero-scene" class="hero__canvas" aria-hidden="true"></canvas>
-    <div class="hero__vignette" aria-hidden="true"></div>
-    <div class="hero__content">
-      <p class="hero__tagline">Accounting &amp; Finance, University of Edinburgh</p>
-      <h1 class="hero__title">
-        <span class="row"><span>Benjamin</span></span>
-        <span class="row"><span>Stone</span></span>
-      </h1>
-      <p class="body-copy hero__lede">
-        Second-year Accounting and Finance student at the University of Edinburgh,
-        building a track record in markets before I get to the desk: from constructing
-        a rules-based luxury watch index to stress-testing a FTSE&nbsp;100 company's
-        loyalty accounting.
-      </p>
-      <p class="hero__subline">Headed for a career in finance.<br />Investment Banking Winter Intern at Investec, August 2026.</p>
-      <div class="hero__ctas">
-        <a class="btn-ghost" href="assets/Benjamin_Stone_CV.pdf" download>Download CV</a>
-        <a class="link-underline" href="mailto:Benjystone2005@gmail.com">Email Benjy</a>
+  <main id="main">
+
+    <!-- HERO -->
+    <header class="hero on-brand" data-hero>
+      <div class="wrap hero__inner">
+        <div>
+          <p class="hero__tagline">Accounting &amp; Finance, University of Edinburgh</p>
+          <h1 class="hero__title">
+            <span class="row"><span>Benjamin</span></span>
+            <span class="row"><span>Stone</span></span>
+          </h1>
+          <p class="hero__lede">
+            I'm in my third year of Accounting and Finance at the University of Edinburgh.
+            I built an index of luxury watch resale prices that I still update, and
+            I&rsquo;ve written a research memo on how IAG accounts for its Avios points.
+          </p>
+          <div class="actions">
+            <a class="btn btn--light" href="assets/Benjamin_Stone_CV.pdf" download>Download CV</a>
+            <a class="link" href="mailto:Benjystone2005@gmail.com">Email Benjy</a>
+          </div>
+        </div>
+
+        <aside class="glance" aria-label="At a glance">
+          <p class="glance__title">The short version</p>
+          <dl class="glance__list">
+            <div class="glance__row">
+              <dt>Internship</dt>
+              <dd>Investment Banking Winter Intern, Investec, August 2026</dd>
+              <svg class="tick" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4L16 5"/></svg>
+            </div>
+            <div class="glance__row">
+              <dt>Degree</dt>
+              <dd>Third year, Accounting and Finance at Edinburgh. First-class average so far</dd>
+              <svg class="tick" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4L16 5"/></svg>
+            </div>
+            <div class="glance__row">
+              <dt>Index</dt>
+              <dd>The Luxury Watch Index, up 14.36% since November 2025</dd>
+              <svg class="tick" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4L16 5"/></svg>
+            </div>
+            <div class="glance__row">
+              <dt>Research</dt>
+              <dd>IAG / Avios loyalty breakage memo, June 2026</dd>
+              <svg class="tick" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4L16 5"/></svg>
+            </div>
+            <div class="glance__row">
+              <dt>Sport</dt>
+              <dd>Indoor Cricket World Cup champion with South Africa, 2018</dd>
+              <svg class="tick" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4L16 5"/></svg>
+            </div>
+          </dl>
+        </aside>
+      </div>
+    </header>
+
+    <!-- FIGURES TAPE -->
+    <div class="tape" role="region" aria-label="Figures from my work" tabindex="0">
+      <div class="tape__track">
+        <ul class="tape__list">
+          <li><span class="tape__sym">LWX</span><span class="tape__val">1.1436</span><span class="tape__chg"><span aria-hidden="true">&#9650;</span> 14.36%</span></li>
+          <li><span class="tape__sym">Avios liability</span><span class="tape__val">&euro;3,348m</span><span class="tape__chg"><span aria-hidden="true">&#9650;</span> 27% since 2022</span></li>
+          <li><span class="tape__sym">Breakage sensitivity</span><span class="tape__val">&euro;103m</span><span class="tape__chg">per 5 pts</span></li>
+          <li><span class="tape__sym">Investec DCF</span><span class="tape__val">R1.1bn</span><span class="tape__chg">FMCG acquisition</span></li>
+          <li><span class="tape__sym">Implied EV/EBITDA</span><span class="tape__val">4.5&ndash;7.0x</span></li>
+          <li><span class="tape__sym">Loans modelled</span><span class="tape__val">~6,400</span><span class="tape__chg">a year</span></li>
+          <li><span class="tape__sym">Proposed saving</span><span class="tape__val">~3,000 hrs</span><span class="tape__chg">a year</span></li>
+          <li><span class="tape__sym">Potential revenue uplift</span><span class="tape__val">&pound;150&ndash;200K</span></li>
+          <li><span class="tape__sym">Investec intake</span><span class="tape__val">1 of 6</span><span class="tape__chg">interns</span></li>
+        </ul>
+        <ul class="tape__list" aria-hidden="true">
+          <li><span class="tape__sym">LWX</span><span class="tape__val">1.1436</span><span class="tape__chg">&#9650; 14.36%</span></li>
+          <li><span class="tape__sym">Avios liability</span><span class="tape__val">&euro;3,348m</span><span class="tape__chg">&#9650; 27% since 2022</span></li>
+          <li><span class="tape__sym">Breakage sensitivity</span><span class="tape__val">&euro;103m</span><span class="tape__chg">per 5 pts</span></li>
+          <li><span class="tape__sym">Investec DCF</span><span class="tape__val">R1.1bn</span><span class="tape__chg">FMCG acquisition</span></li>
+          <li><span class="tape__sym">Implied EV/EBITDA</span><span class="tape__val">4.5&ndash;7.0x</span></li>
+          <li><span class="tape__sym">Loans modelled</span><span class="tape__val">~6,400</span><span class="tape__chg">a year</span></li>
+          <li><span class="tape__sym">Proposed saving</span><span class="tape__val">~3,000 hrs</span><span class="tape__chg">a year</span></li>
+          <li><span class="tape__sym">Potential revenue uplift</span><span class="tape__val">&pound;150&ndash;200K</span></li>
+          <li><span class="tape__sym">Investec intake</span><span class="tape__val">1 of 6</span><span class="tape__chg">interns</span></li>
+        </ul>
       </div>
     </div>
-  </header>
 
-  <hr class="divider reveal-line" />
-
-  <!-- PROOF POINTS -->
-  <section class="section section--vh">
-    <div class="proof-grid proof-grid--asymmetric reveal-stagger">
-      <article class="card card--featured">
-        <h2 class="card__title">The Luxury Watch Index</h2>
-        <p class="card__body">A rules-based index of the secondary watch market I built and maintain: up 14.36% since its November 2025 base date, tracked consistently since launch.</p>
-        <a class="link-underline card__link" href="projects.html">See the project &rarr;</a>
-      </article>
-      <div class="proof-grid__stack">
-        <article class="card">
-          <h2 class="card__title">First-Class Average</h2>
-          <p class="card__body">Across First and Second Year of the MA Hons in Accounting and Finance at Edinburgh.</p>
-        </article>
-        <article class="card">
-          <h2 class="card__title">World Cup Champion</h2>
-          <p class="card__body">Represented South Africa at the 2018 Indoor Cricket World Cup in Christchurch, and came home with the title.</p>
-          <a class="link-underline card__link" href="beyond-finance.html">Beyond finance &rarr;</a>
-        </article>
+    <!-- TRACK RECORD -->
+    <section class="section--tight" aria-label="Where I've worked and studied">
+      <div class="wrap strip" data-reveal>
+        <p class="strip__label">Where I've worked and studied</p>
+        <ul class="strip__list">
+          <li style="--i:0">Investec</li>
+          <li style="--i:1">365 Finance</li>
+          <li style="--i:2">PIMCO Prep</li>
+          <li style="--i:3">University of Edinburgh</li>
+        </ul>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <hr class="divider reveal-line" />
+    <!-- SELF-DIRECTED WORK -->
+    <section class="section" aria-labelledby="work-title">
+      <div class="wrap">
+        <div class="section__head reveal-wipe" data-reveal>
+          <h2 class="section__title" id="work-title">My own projects</h2>
+          <p class="section__intro">Neither of these was for a course or a job. I did them in my own time.</p>
+        </div>
 
-  <!-- CLOSING -->
-  <section class="section">
-    <div class="cta-band reveal">
-      <p class="body-copy">
-        Based in Edinburgh, Scotland. If you're recruiting, connecting after an event,
-        or just curious about the projects, I'd like to hear from you.
-      </p>
-      <div class="cta-band__actions">
-        <a class="btn-ghost" href="mailto:Benjystone2005@gmail.com">Email Benjy</a>
+        <div class="features">
+          <article class="feature">
+            <div class="feature__body">
+              <p class="meta">Live index · Running since November 2025</p>
+              <h3 class="feature__title">The Luxury Watch Index</h3>
+              <div class="feature__stat">
+                <p class="stat stat--total" data-total><span data-sign>+</span><span data-count="14.36" data-decimals="2" data-count-manual>14.36</span>%</p>
+                <p class="stat__caption">Since I started it in November 2025</p>
+              </div>
+              <p class="prose prose--muted">I built this index to follow resale prices for ten popular luxury watches. I update it two or three times a month using listings on Chrono24.</p>
+              <div class="actions">
+                <a class="link" href="projects.html#lwx">See the project <span class="arrow" aria-hidden="true">&rarr;</span></a>
+                <a class="link" href="https://benjystone2005.github.io/The-Luxury-Watch-Index/luxury-watch-index.html" target="_blank" rel="noopener">View the live index</a>
+              </div>
+            </div>
+            <!-- Update the index by adding [date, value] pairs to data-series. -->
+            <figure class="chart feature__media" data-chart
+              data-series='[["2025-11-26",1.0000],["2025-12-04",0.9945],["2025-12-13",1.0686],["2025-12-19",1.0815],["2026-01-08",1.0825],["2026-03-15",1.1213],["2026-03-22",1.1197],["2026-03-29",1.1234],["2026-04-05",1.1278],["2026-04-12",1.1226],["2026-04-20",1.1352],["2026-04-26",1.1266],["2026-05-03",1.1255],["2026-05-17",1.1231],["2026-05-24",1.1297],["2026-06-14",1.1436]]'>
+              <figcaption class="chart__head">
+                <span>LWX composite, rebased to 1.0000</span>
+                <span data-chart-range>26 Nov 2025 &ndash; 14 Jun 2026</span>
+              </figcaption>
+              <a class="shot" href="https://benjystone2005.github.io/The-Luxury-Watch-Index/luxury-watch-index.html" target="_blank" rel="noopener" aria-label="Open the live Luxury Watch Index" data-chart-fallback>
+                <img src="assets/img/lwx-live-index.jpg" width="1600" height="1075" loading="lazy" alt="The live Luxury Watch Index site: index value, year-to-date return, ten constituents and the composite performance chart." />
+              </a>
+              <p class="chart__source">Based on median asking prices for 10 watches on Chrono24.</p>
+            </figure>
+          </article>
+
+          <article class="feature feature--lilac feature--reverse">
+            <div class="feature__body">
+              <p class="meta">Research memo · June 2026</p>
+              <h3 class="feature__title">IAG / Avios: Loyalty Breakage Research Memo</h3>
+              <div class="feature__stat">
+                <p class="stat stat--total" data-total>&euro;<span data-count="103" data-decimals="0">103</span>m</p>
+                <p class="stat__caption">How much IAG&rsquo;s profit moves if its breakage estimate changes by 5 points, by IAG&rsquo;s own numbers</p>
+              </div>
+              <p class="prose prose--muted">When Avios points expire unused, IAG books their value as profit, based on its own estimate of how many will never be spent. I wanted to know how much profit rests on that estimate, and whether anyone outside the company checks it.</p>
+              <div class="actions">
+                <a class="link" href="projects.html#iag">Read the research <span class="arrow" aria-hidden="true">&rarr;</span></a>
+              </div>
+            </div>
+            <a class="paper paper--link feature__media" data-parallax href="assets/IAG_Short_Thesis_Memo.pdf" target="_blank" rel="noopener" aria-label="Open the IAG memo (PDF)">
+              <img src="assets/img/iag-memo-page1.jpg" width="1081" height="1000" loading="lazy" alt="First page of the IAG investment memo: short thesis dated 26 June 2026, authored by Benjamin Stone." />
+            </a>
+          </article>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
+
+    <!-- THE REST OF THE SITE -->
+    <section class="section section--flush" aria-labelledby="more-title">
+      <div class="wrap">
+        <div class="section__head reveal-wipe" data-reveal>
+          <h2 class="section__title" id="more-title">More about me</h2>
+        </div>
+        <ul class="index-list" data-reveal>
+          <li>
+            <a href="experience.html" style="--i:0">
+              <span class="index-list__name">Experience</span>
+              <span class="index-list__desc">Internships at Investec and 365 Finance, the PIMCO Prep programme, and my grades at Edinburgh.</span>
+              <span class="arrow" aria-hidden="true">&rarr;</span>
+            </a>
+          </li>
+          <li>
+            <a href="projects.html" style="--i:1">
+              <span class="index-list__name">Projects</span>
+              <span class="index-list__desc">The full IAG findings, and how the watch index is put together.</span>
+              <span class="arrow" aria-hidden="true">&rarr;</span>
+            </a>
+          </li>
+          <li>
+            <a href="beyond-finance.html" style="--i:2">
+              <span class="index-list__name">Beyond Finance</span>
+              <span class="index-list__desc">Cricket, mostly. I won the 2018 Indoor Cricket World Cup with South Africa.</span>
+              <span class="arrow" aria-hidden="true">&rarr;</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="contact on-brand" aria-labelledby="contact-title">
+      <div class="wrap contact__inner">
+        <div>
+          <h2 class="contact__title" id="contact-title">Get in touch</h2>
+          <p class="contact__text">
+            I&rsquo;m based in Edinburgh. If you&rsquo;re hiring, we met at an event, or you
+            have a question about the projects, send me an email or message me on LinkedIn.
+          </p>
+          <div class="actions">
+            <a class="btn btn--light" href="mailto:Benjystone2005@gmail.com">Email Benjy</a>
+            <a class="btn btn--ghost-light" href="https://www.linkedin.com/in/benjamin-stone-58511b363" target="_blank" rel="noopener">Connect on LinkedIn</a>
+          </div>
+        </div>
+        <dl class="contact__details">
+          <div><dt>Email</dt><dd><a href="mailto:Benjystone2005@gmail.com">Benjystone2005@gmail.com</a></dd></div>
+          <div><dt>Phone</dt><dd><a href="tel:+447365353146">+44 7365 353146</a></dd></div>
+          <div><dt>CV</dt><dd><a href="assets/Benjamin_Stone_CV.pdf" download>Download (PDF)</a></dd></div>
+        </dl>
+      </div>
+    </section>
+
+  </main>
 
   <footer class="site-footer">
-    <p class="site-footer__name">Benjamin Stone, Accounting &amp; Finance, University of Edinburgh</p>
-    <div class="site-footer__links">
-      <a class="link-underline" href="https://www.linkedin.com/" target="_blank" rel="noopener">Connect on LinkedIn</a>
-      <a class="link-underline" href="assets/Benjamin_Stone_CV.pdf" download>Download CV</a>
-      <a class="link-underline" href="mailto:Benjystone2005@gmail.com">Benjystone2005@gmail.com</a>
-      <span class="micro micro-dim">+44 7365 353146</span>
+    <div class="wrap site-footer__inner">
+      <p><span class="site-footer__name">Benjamin Stone</span> · Accounting &amp; Finance, University of Edinburgh</p>
+      <ul class="site-footer__links">
+        <li><a href="https://www.linkedin.com/in/benjamin-stone-58511b363" target="_blank" rel="noopener">LinkedIn</a></li>
+        <li><a href="assets/Benjamin_Stone_CV.pdf" download>CV</a></li>
+        <li><a href="mailto:Benjystone2005@gmail.com">Email</a></li>
+        <li>Edinburgh, Scotland</li>
+      </ul>
     </div>
-    <p class="legal">* Edinburgh, Scotland</p>
   </footer>
 
-  <!-- 3D + motion stack: Three.js (WebGL hero w/ bloom) + GSAP ScrollTrigger.
-       Local engines degrade gracefully if the CDN or WebGL is unavailable. -->
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
   <script src="js/main.js"></script>
-  <script src="js/max3d.js"></script>
-  <script src="js/hero-webgl.js"></script>
 </body>
 </html>

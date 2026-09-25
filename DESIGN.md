@@ -2,69 +2,63 @@
 
 ## Overview
 
-Mercury system: alpine banking at blue hour. A near-black onyx canvas with one-step-lighter graphite surfaces, monochromatic ivory/ash type, and a single cobalt accent reserved for the primary action and for the hero's light source. Flat, borderless, no drop shadows; separation comes from value contrast alone. Pill-shaped controls, 12px card radius. Static four-page site (Home, Experience, Projects, Beyond Finance), no build step, GSAP + Three.js/Canvas via CDN.
+Light, readable system inspired by Wispr Flow: a near-white canvas faintly tinted toward the brand green, deep-green rounded panels bookending each page (home hero, closing contact panel), and soft sage / lilac feature panels for the proof points. EB Garamond headlines over Figtree body copy. Built for a recruiter skimming in daylight: every page states who, what and where in the first screen, and interior pages carry an "On this page" jump row. Static four-page site (Home, Experience, Projects, Beyond Finance), no build step, no JS dependencies.
 
 ## Colors
 
-| Token | Value | Role |
-|---|---|---|
-| `--color-onyx` | `#171721` | Page canvas, hero/section background |
-| `--color-graphite` | `#1e1e2a` | Card and elevated-surface fill (no border, no shadow) |
-| `--color-graphite-hover` | `#24242f` | Card hover state |
-| `--color-obsidian` | `#272735` | Secondary structural surface (grid lines, dividers' dark side) |
-| `--color-slate` | `#70707d` | Structural dividers, muted decorative strokes |
-| `--color-ash` | `#c3c3cc` | Secondary text (body copy, labels, meta) |
-| `--color-ivory` | `#ededf3` | Primary text and foreground |
-| `--color-cobalt` | `#5266eb` | The one chromatic accent: primary CTA fill, hover states, and the hero scene's sole light source |
-| `--color-white` | `#ffffff` | Text on cobalt fills only |
+All tokens live in `:root` in `css/style.css`, written in OKLCH.
 
-Rule: cobalt appears in exactly two places on any given page - the nav's filled CTA pill, and (on the home hero) the WebGL scene's horizon light. It is never used as decoration, a second button, or a WebGL/particle color.
+| Token | Role |
+|---|---|
+| `--bg` | Page canvas (off-white, chroma toward the brand green) |
+| `--surface` | Sage panel: LWX feature, tags, jump pills |
+| `--surface-lilac` | Lilac panel: IAG feature, World Cup panel. Never text |
+| `--ink` / `--ink-2` | Primary / secondary text (both AA+ on every light surface) |
+| `--line` / `--line-strong` | Hairline dividers |
+| `--brand` | Deep green: hero + contact panels, stat numerals, role lines, active nav underline |
+| `--on-brand` / `--on-brand-2` | Primary / secondary text on green panels |
+
+Rule: green is the committed brand colour; lilac is a surface tint only. No third hue.
 
 ## Typography
 
-Current: Inter for both display and body (Mercury's stated CDN-friendly substitute for Söhne Breit + Inter). Under review this pass: Inter-everywhere reads as a default rather than a choice. Direction: keep Inter for body/UI (explicitly permitted as a neutral, Linear-adjacent choice), introduce a distinct display face for headlines only - a variable-width grotesk so the "wide, architectural" character Mercury's spec asks for is a real typographic property, not a description.
-
-- Display weight: 480 only. Never bolder.
-- Body weight: 400, line-height 1.5.
-- Letter-spacing: positive on display (0.01-0.02em), calm on body.
-- Case: sentence case throughout. No uppercase body/nav/button text.
+- Display: EB Garamond 400, `letter-spacing: -0.015em` to `-0.02em`, `text-wrap: balance`. Headings, stat numerals, wordmark, nav-strip names.
+- Body: Figtree 400/500/600, 18px base, line-height 1.6, prose capped at 68ch.
+- Sentence case throughout. No uppercase tracked eyebrows; section meta lines are plain 15px `--ink-2`.
 
 ## Layout
 
-- Page content max-width 1200-1400px depending on section.
-- 72px vertical rhythm between major sections.
-- Left-aligned hero content (never centered), asymmetric where the design read calls for it.
-- Mobile collapses every multi-column layout to single column at 768px.
-
-## Elevation & Depth
-
-No shadows anywhere in the system. Elevation is value contrast only: graphite (#1e1e2a) sits one step lighter than onyx (#171721). Depth in the hero and scroll choreography comes from real 3D (WebGL/CSS perspective transforms + camera movement), not from box-shadow.
-
-## Shapes
-
-- Cards: 12px radius, flat fill, no border.
-- Buttons/inputs: pill (32px primary, 40px ghost/outline).
-- One radius system for the whole site; no mixing sharp and soft without a documented reason.
+- Content max-width 1200px, gutter `clamp(16px, 4vw, 40px)`.
+- Brand panels inset from the viewport by `--edge` (8–16px) with a 24px radius; feature panels 20px; cards/images 12px; buttons and tags are pills.
+- Hero and research/LWX blocks are two-column, collapsing to one column at 960px. Nav collapses to a menu toggle at 768px.
 
 ## Components
 
-- **Primary CTA (cobalt pill):** one per page, the nav's persistent "Connect on LinkedIn."
-- **Ghost button (ivory outline pill):** secondary actions (Download CV, Email).
-- **Graphite card:** flat, no border, no shadow, hover = slight background lift + translateY, no glow.
-- **Nav:** transparent over hero, frosted (backdrop-blur) on scroll.
-- **Live clock pill (Projects, LWX section):** monospace tabular time, cobalt dot as the only accent detail, blinking colon. Content-motivated (watches to time), not decorative.
+- **Nav:** sticky, solid canvas, hairline appears on scroll. Ink pill "Connect on LinkedIn".
+- **Buttons:** `.btn--ink` (primary on light), `.btn--light` (primary on green), `.btn--outline`, `.btn--ghost-light`. Text links use `.link`.
+- **Glance list (home hero):** label/value rows, the fastest scan of the candidate.
+- **Feature panel:** text + real imagery (live LWX screenshot, memo page 1).
+- **Entry:** date/place column + org (serif), role (green), bulleted points. Used on Experience and Beyond Finance.
+- **Contact panel:** closes every page with a page-specific line, two actions and copyable details.
 
-## Do's and Don'ts
+## Finance / accounting details (home)
 
-### Do
-- Reserve cobalt for the single CTA and the hero light source, nothing else.
-- Keep every card borderless and flat; separation via value contrast only.
-- Animate with a stated reason (hierarchy, state, narrative); if the reason can't be said in one sentence, cut the animation.
-- Respect `prefers-reduced-motion` everywhere motion appears.
+- **Auditor's ticks:** each glance fact is checked off in sequence after load.
+- **Figures tape:** a slow crawl of real figures from the work (never invented data); pauses on hover/focus, scrolling nudges it faster, static and scrollable under reduced motion.
+- **LWX chart:** built by `js/main.js` from the `data-series` attribute on the figure. Add `["YYYY-MM-DD", value]` pairs to update it; axis, range label and end value follow. Hover or arrow keys read out each observation.
+- **Double rule under totals:** headline stats carry the accounting grand-total double underline, ruled in once the figure lands.
 
-### Don't
-- Don't add a second accent color, however desaturated.
-- Don't default to three equal cards in a row for proof points or features.
-- Don't add eyebrow/kicker labels to more than one section in three.
-- Don't add scroll cues, vertical rotated page-counters, or agency-portfolio decoration strips.
-- Don't touch the underlying copy/facts on any page; this file governs visual system only.
+## Motion
+
+- Home load: name rises out of its line, glance rows settle, ticks draw. Interior pages: title fades up.
+- Home scroll: hero recedes (scale + content drift); section titles and ledger rules are ruled in left to right; the LWX line is plotted with the headline figure reading the index at the pen's position; the memo page drifts with a gentle parallax.
+- Scroll reveals are armed by JS only when IntersectionObserver exists and motion is allowed; content is visible by default.
+- Stat numerals count up once. LWX clock keeps live time. Plane flyover once per visit.
+- Everything collapses under `prefers-reduced-motion`.
+
+## Don'ts
+
+- Don't add a third colour or use lilac for text.
+- Don't gate content visibility on an animation.
+- Don't reintroduce moving marquees or scroll-scrubbed 3D; they cost readability.
+- Don't touch the underlying copy/facts on any page; this file governs the visual system only.

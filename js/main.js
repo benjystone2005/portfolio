@@ -346,38 +346,6 @@
     drawObserver.observe(plot);
   }
 
-  /* ---------- Checklist board (home) ----------
-     The projects sit on a checklist; each box is ticked as its project
-     scrolls up past the lower third of the screen, and the tally counts up
-     once the tick lands. Ticked in the HTML, so without motion the board
-     simply reads as done. */
-
-  const board = document.querySelector('[data-board]');
-  if (board && motion) {
-    const items = board.querySelectorAll('[data-board-item]');
-    const doneEl = board.querySelector('[data-board-done]');
-    let done = 0;
-    const setDone = (n) => {
-      done = n;
-      if (doneEl) doneEl.textContent = n;
-      board.style.setProperty('--done', (n / items.length).toFixed(3));
-    };
-    setDone(0);
-
-    const checkObserver = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          checkObserver.unobserve(entry.target);
-          entry.target.classList.add('is-checked');
-          setTimeout(() => setDone(done + 1), 420);
-        });
-      },
-      { rootMargin: '0px 0px -35% 0px' }
-    );
-    items.forEach((item) => checkObserver.observe(item));
-  }
-
   /* ---------- Chart intro (home) ----------
      Armed by the <head> script (.intro-on). Plays on a clock: the LWX quote
      draws itself, holds on the last print for a beat, then the camera flies

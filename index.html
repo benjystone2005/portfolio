@@ -171,80 +171,60 @@
       </div>
     </section>
 
-    <!-- SELF-DIRECTED WORK: the projects sit on a checklist board; each is
-         ticked off as it scrolls into view. -->
+    <!-- SELF-DIRECTED WORK -->
     <section class="section" aria-labelledby="work-title">
       <div class="wrap">
-        <div class="board" data-board>
-          <div class="board__sheet">
-            <div class="board__top" aria-hidden="true">
-              <span>Checklist</span>
-              <span class="board__tally"><span class="board__meter"></span><span><span data-board-done>2</span> of 2 done</span></span>
-            </div>
-            <div class="section__head reveal-wipe" data-reveal>
-              <h2 class="section__title" id="work-title">My own projects</h2>
-              <p class="section__intro">Neither of these was for a course or a job. I did them in my own time.</p>
-            </div>
+        <div class="section__head reveal-wipe" data-reveal>
+          <h2 class="section__title" id="work-title">My own projects</h2>
+          <p class="section__intro">Neither of these was for a course or a job. I did them in my own time.</p>
+        </div>
 
-            <ol class="board__list">
-              <li class="board__item" data-board-item>
-                <span class="board__check" aria-hidden="true">
-                  <span class="board__box"><svg viewBox="0 0 20 20"><path d="M4 10.5l4 4L16 5"/></svg></span>
-                  <span class="board__num">01</span>
-                </span>
-                <article class="feature">
-                  <div class="feature__body">
-                    <p class="meta">Live index · Running since November 2025</p>
-                    <h3 class="feature__title">The Luxury Watch Index</h3>
-                    <div class="feature__stat">
-                      <p class="stat stat--total" data-total><span data-sign>+</span><span data-count="15.29" data-decimals="2" data-count-manual>15.29</span>%</p>
-                      <p class="stat__caption">Since I started it in November 2025</p>
-                    </div>
-                    <p class="prose prose--muted">I built this index to follow resale prices for ten popular luxury watches. I update it two or three times a month using listings on Chrono24.</p>
-                    <div class="actions">
-                      <a class="link" href="/projects#lwx">See the project <span class="arrow" aria-hidden="true">&rarr;</span></a>
-                      <a class="link" href="https://benjystone2005.github.io/The-Luxury-Watch-Index/luxury-watch-index.html" target="_blank" rel="noopener">View the live index</a>
-                    </div>
-                  </div>
-                  <!-- Update the index by adding [date, value] pairs to data-series. -->
-                  <figure class="chart feature__media" data-chart
-                    data-series='[["2025-11-26",1.0000],["2025-12-04",0.9945],["2025-12-13",1.0686],["2025-12-19",1.0815],["2026-01-08",1.0825],["2026-03-15",1.1213],["2026-03-22",1.1197],["2026-03-29",1.1234],["2026-04-05",1.1278],["2026-04-12",1.1226],["2026-04-20",1.1352],["2026-04-26",1.1266],["2026-05-03",1.1255],["2026-05-17",1.1231],["2026-05-24",1.1297],["2026-06-14",1.1436],["2026-09-13",1.1529]]'>
-                    <figcaption class="chart__head">
-                      <span>LWX composite, rebased to 1.0000</span>
-                      <span data-chart-range>26 Nov 2025 &ndash; 13 Sep 2026</span>
-                    </figcaption>
-                    <a class="shot" href="https://benjystone2005.github.io/The-Luxury-Watch-Index/luxury-watch-index.html" target="_blank" rel="noopener" aria-label="Open the live Luxury Watch Index" data-chart-fallback>
-                      <img src="assets/img/lwx-live-index.jpg" width="1600" height="1075" loading="lazy" alt="The live Luxury Watch Index site: index value, year-to-date return, ten constituents and the composite performance chart." />
-                    </a>
-                    <p class="chart__source">Based on median asking prices for 10 watches on Chrono24.</p>
-                  </figure>
-                </article>
-              </li>
-              <li class="board__item" data-board-item>
-                <span class="board__check" aria-hidden="true">
-                  <span class="board__box"><svg viewBox="0 0 20 20"><path d="M4 10.5l4 4L16 5"/></svg></span>
-                  <span class="board__num">02</span>
-                </span>
-                <article class="feature feature--lilac feature--reverse">
-                  <div class="feature__body">
-                    <p class="meta">Research memo · June 2026</p>
-                    <h3 class="feature__title">IAG / Avios: Loyalty Breakage Research Memo</h3>
-                    <div class="feature__stat">
-                      <p class="stat stat--total" data-total>&euro;<span data-count="103" data-decimals="0">103</span>m</p>
-                      <p class="stat__caption">How much IAG&rsquo;s profit moves if its breakage estimate changes by 5 points, by IAG&rsquo;s own numbers</p>
-                    </div>
-                    <p class="prose prose--muted">When Avios points expire unused, IAG books their value as profit, based on its own estimate of how many will never be spent. I wanted to know how much profit rests on that estimate, and whether anyone outside the company checks it.</p>
-                    <div class="actions">
-                      <a class="link" href="/projects#iag">Read the research <span class="arrow" aria-hidden="true">&rarr;</span></a>
-                    </div>
-                  </div>
-                  <a class="paper paper--link feature__media" data-parallax href="assets/IAG_Short_Thesis_Memo.pdf" target="_blank" rel="noopener" aria-label="Open the IAG memo (PDF)">
-                    <img src="assets/img/iag-memo-page1.jpg" width="1081" height="1000" loading="lazy" alt="First page of the IAG investment memo: short thesis dated 26 June 2026, authored by Benjamin Stone." />
-                  </a>
-                </article>
-              </li>
-            </ol>
-          </div>
+        <div class="features">
+          <article class="reveal feature">
+            <div class="feature__body">
+              <p class="meta">Live index · Running since November 2025</p>
+              <h3 class="feature__title">The Luxury Watch Index</h3>
+              <div class="feature__stat">
+                <p class="stat stat--total" data-total><span data-sign>+</span><span data-count="15.29" data-decimals="2" data-count-manual>15.29</span>%</p>
+                <p class="stat__caption">Since I started it in November 2025</p>
+              </div>
+              <p class="prose prose--muted">I built this index to follow resale prices for ten popular luxury watches. I update it two or three times a month using listings on Chrono24.</p>
+              <div class="actions">
+                <a class="link" href="/projects#lwx">See the project <span class="arrow" aria-hidden="true">&rarr;</span></a>
+                <a class="link" href="https://benjystone2005.github.io/The-Luxury-Watch-Index/luxury-watch-index.html" target="_blank" rel="noopener">View the live index</a>
+              </div>
+            </div>
+            <!-- Update the index by adding [date, value] pairs to data-series. -->
+            <figure class="chart feature__media" data-chart
+              data-series='[["2025-11-26",1.0000],["2025-12-04",0.9945],["2025-12-13",1.0686],["2025-12-19",1.0815],["2026-01-08",1.0825],["2026-03-15",1.1213],["2026-03-22",1.1197],["2026-03-29",1.1234],["2026-04-05",1.1278],["2026-04-12",1.1226],["2026-04-20",1.1352],["2026-04-26",1.1266],["2026-05-03",1.1255],["2026-05-17",1.1231],["2026-05-24",1.1297],["2026-06-14",1.1436],["2026-09-13",1.1529]]'>
+              <figcaption class="chart__head">
+                <span>LWX composite, rebased to 1.0000</span>
+                <span data-chart-range>26 Nov 2025 &ndash; 13 Sep 2026</span>
+              </figcaption>
+              <a class="shot" href="https://benjystone2005.github.io/The-Luxury-Watch-Index/luxury-watch-index.html" target="_blank" rel="noopener" aria-label="Open the live Luxury Watch Index" data-chart-fallback>
+                <img src="assets/img/lwx-live-index.jpg" width="1600" height="1075" loading="lazy" alt="The live Luxury Watch Index site: index value, year-to-date return, ten constituents and the composite performance chart." />
+              </a>
+              <p class="chart__source">Based on median asking prices for 10 watches on Chrono24.</p>
+            </figure>
+          </article>
+
+          <article class="reveal feature feature--lilac feature--reverse">
+            <div class="feature__body">
+              <p class="meta">Research memo · June 2026</p>
+              <h3 class="feature__title">IAG / Avios: Loyalty Breakage Research Memo</h3>
+              <div class="feature__stat">
+                <p class="stat stat--total" data-total>&euro;<span data-count="103" data-decimals="0">103</span>m</p>
+                <p class="stat__caption">How much IAG&rsquo;s profit moves if its breakage estimate changes by 5 points, by IAG&rsquo;s own numbers</p>
+              </div>
+              <p class="prose prose--muted">When Avios points expire unused, IAG books their value as profit, based on its own estimate of how many will never be spent. I wanted to know how much profit rests on that estimate, and whether anyone outside the company checks it.</p>
+              <div class="actions">
+                <a class="link" href="/projects#iag">Read the research <span class="arrow" aria-hidden="true">&rarr;</span></a>
+              </div>
+            </div>
+            <a class="paper paper--link feature__media" data-parallax href="assets/IAG_Short_Thesis_Memo.pdf" target="_blank" rel="noopener" aria-label="Open the IAG memo (PDF)">
+              <img src="assets/img/iag-memo-page1.jpg" width="1081" height="1000" loading="lazy" alt="First page of the IAG investment memo: short thesis dated 26 June 2026, authored by Benjamin Stone." />
+            </a>
+          </article>
         </div>
       </div>
     </section>

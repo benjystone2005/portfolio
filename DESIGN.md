@@ -38,8 +38,7 @@ Rule: green is the committed brand colour; lilac is a surface tint only. No thir
 - **Pixel name (home hero):** the name is redrawn on a canvas as a grid of square pixels in `--on-brand`, rastered letter by letter from where the browser set the real heading, so it follows the type exactly. The heading keeps its text (transparent) for screen readers, search and copying; forced-colours mode shows the text instead. Static under reduced motion; the plain heading if the canvas can't take over.
 - **Buttons:** `.btn--ink` (primary on light), `.btn--light` (primary on green), `.btn--outline`, `.btn--ghost-light`. Text links use `.link`.
 - **Glance list (home hero):** label/value rows, the fastest scan of the candidate.
-- **Feature panel:** text + real imagery (live LWX screenshot, memo page 1).
-- **Checklist board (home projects):** the two feature panels sit on a white sheet clipped to a green board. A ruled margin holds a numbered box per project; a tally and meter in the sheet's header count them off.
+- **Feature panel:** text + real imagery (live LWX screenshot, memo page 1). On home the two project panels stack under the section heading and fade up as they scroll in.
 - **Entry:** date/place column + org (serif), role (green), bulleted points. Used on Experience and Beyond Finance.
 - **Contact panel:** closes every page with a page-specific line, two actions and copyable details.
 - **Index list (home "More about me"):** hovering a row rules in a sage highlight left to right; it fades on the way out.
@@ -47,7 +46,6 @@ Rule: green is the committed brand colour; lilac is a surface tint only. No thir
 ## Finance / accounting details (home)
 
 - **Chart intro:** on arrival or reload (not when clicking Home from another page, not on Back, not with a URL anchor, never under reduced motion) the home page opens on an LWX quote: the line draws itself (1.5s), the price and change read the index at the pen, and a last-price tag rides the right axis. It holds on the last print for one ping, then plays on its own: the camera flies into that dot, which is the hero seen through a `clip-path` circle, growing until the screen is green and settling into the rounded hero panel (1.9s). About 4s in all; the page holds still meanwhile. Any scroll, key or tap plays the rest at 4x; tabbing into the hero skips it. When it ends the stage is removed and the page is the plain home page. Reads the same `data-series` as the LWX chart.
-- **Checklist ticks:** each project's box fills and its tick is drawn as the project scrolls past the lower third of the screen; the tally and meter catch up once the tick lands. Ticked in the HTML, so without motion the board reads as done.
 - **Auditor's ticks:** each glance fact is checked off in sequence after load.
 - **Figures tape:** a slow crawl of real figures from the work (never invented data); pauses on hover/focus, scrolling nudges it faster, static and scrollable under reduced motion.
 - **LWX chart:** built by `js/main.js` from the `data-series` attribute on the figure. Add `["YYYY-MM-DD", value]` pairs to update it; axis, range label and end value follow. Hover or arrow keys read out each observation.

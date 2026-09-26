@@ -839,153 +839,6 @@ a.shot:hover img {
   transform: translateY(-4px);
 }
 
-/* ================= checklist board (home projects) =================
-   The project panels sit on a sheet clipped to a green board. Each has a
-   box in the ruled margin, ticked off as it scrolls into view. */
-
-.board {
-  position: relative;
-  padding: 40px clamp(8px, 1.4vw, 16px) clamp(8px, 1.4vw, 16px);
-  border-radius: var(--radius-panel);
-  background: var(--brand);
-}
-
-/* the clip, and the slot in it */
-.board::before,
-.board::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  z-index: 1;
-  translate: -50% 0;
-}
-.board::before {
-  top: 12px;
-  width: clamp(120px, 14vw, 168px);
-  height: 50px;
-  border-radius: 12px 12px 20px 20px;
-  background: linear-gradient(oklch(0.96 0.006 160), oklch(0.83 0.012 160));
-  box-shadow:
-    inset 0 1px 0 oklch(1 0 0 / 0.8),
-    inset 0 -2px 0 oklch(0.21 0.02 165 / 0.12),
-    0 4px 8px oklch(0.21 0.02 165 / 0.3);
-}
-.board::after {
-  top: 22px;
-  width: 36px;
-  height: 9px;
-  border-radius: var(--radius-full);
-  background: var(--brand-deep);
-  box-shadow: 0 1px 0 oklch(1 0 0 / 0.6);
-}
-
-.board__sheet {
-  padding: 52px clamp(16px, 3.5vw, 48px) clamp(12px, 2vw, 24px);
-  border-radius: 10px;
-  background: var(--white);
-  box-shadow: 0 1px 3px oklch(0.21 0.02 165 / 0.25);
-}
-
-.board__top {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px 24px;
-  padding-bottom: 14px;
-  margin-bottom: clamp(24px, 3.5vw, 40px);
-  border-bottom: 1px solid var(--line-strong);
-  color: var(--ink-2);
-  font-size: var(--text-sm);
-  font-weight: 500;
-}
-
-.board__tally {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  font-variant-numeric: tabular-nums;
-}
-
-.board__meter {
-  width: 72px;
-  height: 4px;
-  overflow: hidden;
-  border-radius: var(--radius-full);
-  background: var(--line);
-}
-.board__meter::before {
-  content: '';
-  display: block;
-  height: 100%;
-  background: var(--brand);
-  transform-origin: 0 50%;
-  transform: scaleX(var(--done, 1));
-}
-
-.board__list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  border-top: 1px solid var(--line);
-}
-
-.board__item {
-  display: grid;
-  grid-template-columns: clamp(52px, 6vw, 72px) minmax(0, 1fr);
-  gap: clamp(16px, 2.4vw, 32px);
-  padding-block: clamp(16px, 2.4vw, 28px);
-  border-bottom: 1px solid var(--line);
-}
-.board__item:last-child {
-  border-bottom: 0;
-}
-
-/* the margin: box and item number, ruled off from the work */
-.board__check {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  padding-top: clamp(12px, 2vw, 24px);
-  border-right: 1px solid oklch(0.36 0.07 168 / 0.35);
-}
-
-.board__box {
-  display: grid;
-  place-items: center;
-  width: 30px;
-  height: 30px;
-  border: 2px solid var(--brand);
-  border-radius: 8px;
-  background: var(--brand);
-  color: var(--on-brand);
-}
-.board__box svg {
-  width: 20px;
-  height: 20px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2.5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-.board__box path {
-  stroke-dasharray: 20;
-  stroke-dashoffset: 0;
-}
-
-.board__num {
-  color: var(--ink-2);
-  font-size: var(--text-sm);
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-}
-
-.board .feature {
-  padding: clamp(20px, 3.5vw, 48px);
-}
-
 /* ================= page index list ================= */
 
 .index-list {
@@ -2078,29 +1931,6 @@ a.shot:hover img {
     transform: translateX(6px);
   }
 
-  /* checklist board: the box fills, the tick is drawn, the tally catches up */
-  .js-reveal .board__box {
-    transition:
-      background-color 0.25s var(--ease-out),
-      border-color 0.25s var(--ease-out);
-  }
-  .js-reveal .board__box path {
-    transition: stroke-dashoffset 0.45s var(--ease-out) 0.12s;
-  }
-  .js-reveal .board__item:not(.is-checked) .board__box {
-    border-color: var(--line-strong);
-    background: transparent;
-  }
-  .js-reveal .board__item:not(.is-checked) .board__box path {
-    stroke-dashoffset: 20;
-  }
-  .board__item.is-checked .board__box {
-    animation: box-press 0.35s var(--ease-out);
-  }
-  .js-reveal .board__meter::before {
-    transition: transform 0.6s var(--ease-out-expo);
-  }
-
   .js-reveal .stat--total::after {
     transition: transform 0.9s var(--ease-out-expo);
   }
@@ -2132,10 +1962,6 @@ a.shot:hover img {
 @keyframes intro-ping {
   from { opacity: 0.6; transform: scale(1); }
   to { opacity: 0; transform: scale(3); }
-}
-
-@keyframes box-press {
-  40% { scale: 0.88; }
 }
 
 @keyframes tape {
@@ -2292,17 +2118,6 @@ a.shot:hover img {
 
   .strip__list {
     justify-content: flex-start;
-  }
-
-  /* the margin moves above each item */
-  .board__item {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 14px;
-  }
-  .board__check {
-    flex-direction: row;
-    padding-top: 0;
-    border-right: 0;
   }
 }
 

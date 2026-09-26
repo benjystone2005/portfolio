@@ -36,7 +36,7 @@ Confident, precise, understated. The site should feel like it was made by someon
 
 1. **Restraint is the argument.** The one cobalt accent and the calm, dark canvas are themselves a claim about the candidate's judgment. Do not dilute the accent by using it decoratively.
 2. **Every motion has a reason.** Animation should dramatize a specific idea (turning scattered data into one conviction, precision, arrival) not decorate a section because motion is available.
-3. **Numbers do the talking.** The proof points (15.29%, 5-10%, EUR 103m, first-class average) are the actual content. Design should make them legible and give them room, not compete with them.
+3. **Numbers do the talking.** The proof points (15.77%, 5-10%, EUR 103m, first-class average) are the actual content. Design should make them legible and give them room, not compete with them.
 4. **Recruiter-scannable, not recruiter-patronized.** Respect a sophisticated reader: no hand-holding copy, no over-explained metaphors, no filler between the proof points.
 5. **One accent, one voice, one system across all four pages.** No section-to-section register drift; Mercury's tokens hold everywhere.
 

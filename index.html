@@ -10,6 +10,23 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400..600&family=Figtree:wght@400..700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
+  <script>
+    /* Arm the chart intro before first paint: only when arriving from outside
+       the site (not clicking Home from another page), with no anchor, and
+       motion allowed. Without it the page renders exactly as before. */
+    (function () {
+      try {
+        var nav = performance.getEntriesByType('navigation')[0];
+        var fromSite = document.referrer &&
+          new URL(document.referrer).origin === location.origin &&
+          (!nav || nav.type === 'navigate');
+        if (!fromSite && !location.hash &&
+            !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          document.documentElement.classList.add('intro-on');
+        }
+      } catch (e) {}
+    })();
+  </script>
 </head>
 <body>
 
@@ -33,58 +50,82 @@
 
   <main id="main">
 
-    <!-- HERO -->
-    <header class="hero on-brand" data-hero>
-      <div class="wrap hero__inner">
-        <div>
-          <p class="hero__tagline">Accounting &amp; Finance, University of Edinburgh</p>
-          <h1 class="hero__title">
-            <span class="row"><span>Benjamin</span></span>
-            <span class="row"><span>Stone</span></span>
-          </h1>
-          <p class="hero__lede">
-            I'm in my third year of Accounting and Finance at the University of Edinburgh.
-            I built an index of luxury watch resale prices that I still update, and
-            I&rsquo;ve written a research memo on how IAG accounts for its Avios points.
-          </p>
-          <div class="actions">
-            <a class="btn btn--light" href="assets/Benjamin_Stone_CV.pdf" download>Download CV</a>
-            <a class="link" href="mailto:benjystone2005@gmail.com">Email Benjamin</a>
+    <!-- INTRO: the LWX quote draws itself, then scrolling zooms into its last
+         dot, which opens onto the hero. Built by js/main.js from the chart's
+         data-series; inert unless <html> has .intro-on. -->
+    <div class="intro" data-intro>
+      <div class="intro__pin">
+        <div class="intro__stage">
+          <div class="intro__quote wrap" aria-hidden="true">
+            <p class="intro__kicker">LWX &middot; The Luxury Watch Index</p>
+            <p class="intro__price">
+              <span class="intro__value" data-intro-value>1.1436</span>
+              <span class="intro__chg" data-intro-chg>&#9650; 14.36%</span>
+            </p>
+            <p class="intro__sub">Since 26 Nov 2025 &middot; built and updated by Benjamin Stone</p>
           </div>
+          <div class="intro__plot wrap" data-intro-plot></div>
+          <button class="intro__cue" type="button" data-intro-enter>
+            <span>Scroll to enter</span>
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 4v12M4.5 10.5 10 16l5.5-5.5"/></svg>
+          </button>
         </div>
 
-        <aside class="glance" aria-label="At a glance">
-          <p class="glance__title">The short version</p>
-          <dl class="glance__list">
-            <div class="glance__row">
-              <dt>Internship</dt>
-              <dd>Investment Banking Winter Intern, Investec, August 2026</dd>
-              <svg class="tick" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4L16 5"/></svg>
+        <!-- HERO -->
+        <header class="hero on-brand" data-hero>
+          <div class="wrap hero__inner">
+            <div>
+              <p class="hero__tagline">Accounting &amp; Finance, University of Edinburgh</p>
+              <h1 class="hero__title">
+                <span class="row"><span>Benjamin</span></span>
+                <span class="row"><span>Stone</span></span>
+              </h1>
+              <p class="hero__lede">
+                I'm in my third year of Accounting and Finance at the University of Edinburgh.
+                I built an index of luxury watch resale prices that I still update, and
+                I&rsquo;ve written a research memo on how IAG accounts for its Avios points.
+              </p>
+              <div class="actions">
+                <a class="btn btn--light" href="assets/Benjamin_Stone_CV.pdf" download>Download CV</a>
+                <a class="link" href="mailto:benjystone2005@gmail.com">Email Benjamin</a>
+              </div>
             </div>
-            <div class="glance__row">
-              <dt>Degree</dt>
-              <dd>Third year, Accounting and Finance at Edinburgh. First-class average so far</dd>
-              <svg class="tick" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4L16 5"/></svg>
-            </div>
-            <div class="glance__row">
-              <dt>Index</dt>
-              <dd>The Luxury Watch Index, up 14.36% since November 2025</dd>
-              <svg class="tick" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4L16 5"/></svg>
-            </div>
-            <div class="glance__row">
-              <dt>Research</dt>
-              <dd>IAG / Avios loyalty breakage memo, June 2026</dd>
-              <svg class="tick" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4L16 5"/></svg>
-            </div>
-            <div class="glance__row">
-              <dt>Sport</dt>
-              <dd>Indoor Cricket World Cup champion with South Africa, 2018</dd>
-              <svg class="tick" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4L16 5"/></svg>
-            </div>
-          </dl>
-        </aside>
+
+            <aside class="glance" aria-label="At a glance">
+              <p class="glance__title">The short version</p>
+              <dl class="glance__list">
+                <div class="glance__row">
+                  <dt>Internship</dt>
+                  <dd>Investment Banking Winter Intern, Investec, August 2026</dd>
+                  <svg class="tick" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4L16 5"/></svg>
+                </div>
+                <div class="glance__row">
+                  <dt>Degree</dt>
+                  <dd>Third year, Accounting and Finance at Edinburgh. First-class average so far</dd>
+                  <svg class="tick" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4L16 5"/></svg>
+                </div>
+                <div class="glance__row">
+                  <dt>Index</dt>
+                  <dd>The Luxury Watch Index, up 14.36% since November 2025</dd>
+                  <svg class="tick" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4L16 5"/></svg>
+                </div>
+                <div class="glance__row">
+                  <dt>Research</dt>
+                  <dd>IAG / Avios loyalty breakage memo, June 2026</dd>
+                  <svg class="tick" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4L16 5"/></svg>
+                </div>
+                <div class="glance__row">
+                  <dt>Sport</dt>
+                  <dd>Indoor Cricket World Cup champion with South Africa, 2018</dd>
+                  <svg class="tick" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4L16 5"/></svg>
+                </div>
+              </dl>
+            </aside>
+          </div>
+        </header>
       </div>
-    </header>
+      <div class="intro__runway"></div>
+    </div>
 
     <!-- FIGURES TAPE -->
     <div class="tape" role="region" aria-label="Figures from my work" tabindex="0">

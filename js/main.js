@@ -9,6 +9,7 @@
   const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
   const easeOutQuart = (t) => 1 - Math.pow(1 - t, 4);
   const easeInOutSine = (t) => -(Math.cos(Math.PI * t) - 1) / 2;
+  const easeInOutCubic = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
   /* ---------- Nav: scrolled state + mobile toggle ---------- */
 
@@ -344,6 +345,332 @@
     drawObserver.observe(plot);
   }
 
+  /* ---------- Chart intro (home) ----------
+     Armed by the <head> script (.intro-on). The LWX quote draws itself on
+     load; scrolling the runway then flies the camera into the last print.
+     That dot is the hero seen through a clip-path circle, which grows until
+     the hero is fully open. Scroll-scrubbed, so it also plays in reverse. */
+
+  const root = document.documentElement;
+  const intro = document.querySelector('[data-intro]');
+  let introEnd = 0; // scroll the intro consumes; the hero's own effects start after it
+
+  if (intro && root.classList.contains('intro-on')) {
+    try {
+      setupIntro();
+    } catch (e) {
+      root.classList.remove('intro-on');
+      introEnd = 0;
+      const hero = intro.querySelector('[data-hero]');
+      if (hero) hero.style.clipPath = '';
+    }
+  }
+
+  function setupIntro() {
+    const src = document.querySelector('[data-chart]');
+    const series = JSON.parse(src.dataset.series).map(([d, v]) => ({
+      t: Date.parse(d + 'T12:00:00Z'),
+      v,
+    }));
+    if (series.length < 2) throw new Error('intro: no series');
+
+    const hero = intro.querySelector('[data-hero]');
+    const stage = intro.querySelector('.intro__stage');
+    const plotBox = intro.querySelector('[data-intro-plot]');
+    const runway = intro.querySelector('.intro__runway');
+    const cue = intro.querySelector('[data-intro-enter]');
+    const valueEl = intro.querySelector('[data-intro-value]');
+    const chgEl = intro.querySelector('[data-intro-chg]');
+
+    const NS = 'http://www.w3.org/2000/svg';
+    const AXIS_W = 76; // right-hand price axis
+    const X_H = 30; // month labels under the plot
+    const R0 = 7; // dot radius at rest
+    const ZOOM_END = 0.8; // share of the runway spent zooming; the rest settles the panel
+    const CAM_MAX = 40; // how far the camera flies into the chart
+    const DRAW_MS = 1900;
+
+    const first = series[0];
+    const last = series[series.length - 1];
+    const values = series.map((p) => p.v);
+    const min = Math.min(...values);
+    const max = Math.max(...values);
+    const spread = max - min || 0.1;
+    const lo = min - spread * 0.14;
+    const hi = max + spread * 0.22;
+    const monthFmt = new Intl.DateTimeFormat('en-GB', { month: 'short', timeZone: 'UTC' });
+
+    const el = (tag, attrs, parent) => {
+      const node = document.createElementNS(NS, tag);
+      Object.keys(attrs).forEach((k) => node.setAttribute(k, attrs[k]));
+      if (parent) parent.appendChild(node);
+      return node;
+    };
+    const valueAt = (t) => {
+      for (let i = 1; i < series.length; i++) {
+        if (t <= series[i].t) {
+          const a = series[i - 1];
+          const b = series[i];
+          return a.v + ((b.v - a.v) * (t - a.t)) / (b.t - a.t);
+        }
+      }
+      return last.v;
+    };
+
+    /* scene: camera group (grid, area, line) under screen-space axes and dot */
+    const svg = el('svg', { class: 'intro__svg', 'aria-hidden': 'true' });
+    const defs = el('defs', {}, svg);
+    const grad = el('linearGradient', { id: 'intro-fill', x1: 0, y1: 0, x2: 0, y2: 1 }, defs);
+    el('stop', { offset: '0%', 'stop-color': 'oklch(0.36 0.07 168)', 'stop-opacity': '0.2' }, grad);
+    el('stop', { offset: '100%', 'stop-color': 'oklch(0.36 0.07 168)', 'stop-opacity': '0' }, grad);
+    const clip = el('clipPath', { id: 'intro-clip' }, defs);
+    const clipRect = el('rect', { x: 0, y: -1e5, width: 0, height: 2e5 }, clip);
+
+    const cam = el('g', {}, svg);
+    const grid = el('g', { class: 'intro__grid' }, cam);
+    const ink = el('g', { 'clip-path': 'url(#intro-clip)' }, cam);
+    const area = el('path', { class: 'intro__area' }, ink);
+    const line = el('path', { class: 'intro__line' }, ink);
+
+    const axes = el('g', { class: 'intro__axes' }, svg);
+    const yLabels = el('g', {}, axes);
+    const xLabels = el('g', {}, axes);
+    const lastLine = el('line', { class: 'intro__last' }, axes);
+    const tag = el('g', { class: 'intro__tag' }, axes);
+    el('rect', { x: 0, y: -11, width: 60, height: 22, rx: 11 }, tag);
+    const tagText = el('text', { x: 30, y: 4, 'text-anchor': 'middle' }, tag);
+
+    const ping = el('circle', { class: 'intro__ping', r: R0 }, svg);
+    const dot = el('circle', { class: 'intro__dot', r: R0 }, svg);
+    const frame = el('rect', { class: 'intro__frame' }, svg); // the full-screen green settling into the hero
+    stage.prepend(svg);
+
+    /* layout: everything in stage pixels, rebuilt on resize */
+    let g; // geometry for the current size
+    const layout = () => {
+      root.style.setProperty('--nav-h', nav.offsetHeight + 'px');
+      const W = stage.clientWidth;
+      const H = stage.clientHeight;
+      const pad = getComputedStyle(plotBox);
+      const L = plotBox.offsetLeft + parseFloat(pad.paddingLeft);
+      const R = plotBox.offsetLeft + plotBox.offsetWidth - parseFloat(pad.paddingRight) - AXIS_W;
+      const T = plotBox.offsetTop + 12;
+      const B = Math.max(T + 40, plotBox.offsetTop + plotBox.offsetHeight - X_H);
+      const xOf = (t) => L + ((t - first.t) / (last.t - first.t)) * (R - L);
+      const yOf = (v) => T + ((hi - v) / (hi - lo)) * (B - T);
+      svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+
+      const pts = series.map((p) => [xOf(p.t).toFixed(1), yOf(p.v).toFixed(1)]);
+      const d = pts.map((p, i) => (i ? 'L' : 'M') + p[0] + ' ' + p[1]).join(' ');
+      line.setAttribute('d', d);
+      area.setAttribute('d', `${d} L${R} ${B} L${L} ${B} Z`);
+
+      grid.textContent = '';
+      yLabels.textContent = '';
+      for (let v = Math.ceil(lo / 0.05) * 0.05; v <= hi; v += 0.05) {
+        const gv = Math.round(v * 100) / 100;
+        const y = yOf(gv);
+        el('line', { x1: L, x2: R, y1: y, y2: y, class: Math.abs(gv - 1) < 1e-9 ? 'is-base' : '' }, grid);
+        const label = el('text', { x: R + 20, y: y + 4 }, yLabels);
+        label.textContent = gv.toFixed(2);
+        label.dataset.y = y;
+      }
+
+      xLabels.textContent = '';
+      const start = new Date(first.t);
+      let m = Date.UTC(start.getUTCFullYear(), start.getUTCMonth() + 1, 1);
+      let prevX = -Infinity;
+      while (m <= last.t) {
+        const x = xOf(m);
+        if (x - prevX >= 64) {
+          const month = new Date(m);
+          el('text', { x, y: B + 22, 'text-anchor': 'middle' }, xLabels).textContent =
+            monthFmt.format(month) + (month.getUTCMonth() === 0 ? ' ' + month.getUTCFullYear() : '');
+          prevX = x;
+        }
+        m = Date.UTC(new Date(m).getUTCFullYear(), new Date(m).getUTCMonth() + 1, 1);
+      }
+
+      // the hero, in stage pixels: the dot flies to the middle of its visible
+      // part and grows until the whole stage is green
+      const hx = hero.offsetLeft;
+      const hy = hero.offsetTop - stage.offsetTop;
+      const hw = hero.offsetWidth;
+      const hh = hero.offsetHeight;
+      const cx = hx + hw / 2;
+      const cy = hy + Math.min(hh, H - hy) / 2;
+      g = {
+        W, H, L, R, B, xOf, yOf, hx, hy, hw, hh, cx, cy,
+        dot: { x: xOf(last.t), y: yOf(last.v) },
+        rMax: Math.hypot(Math.max(cx, W - cx), Math.max(cy, H - cy)) + 2,
+        radius: parseFloat(getComputedStyle(hero).borderTopLeftRadius) || 0,
+      };
+      introEnd = runway.offsetHeight;
+    };
+
+    /* the pen: draws the line, moves the dot, prices the quote */
+    let penT = first.t;
+    let drawing = true;
+    const pct = (v) => (v < 1 ? '▼ ' : '▲ ') + Math.abs((v - 1) * 100).toFixed(2) + '%';
+    const setPen = (t) => {
+      penT = t;
+      const v = valueAt(t);
+      const x = g.xOf(t);
+      const y = g.yOf(v);
+      clipRect.setAttribute('width', Math.max(0, x + 2));
+      [dot, ping].forEach((c) => {
+        c.setAttribute('cx', x);
+        c.setAttribute('cy', y);
+      });
+      lastLine.setAttribute('x1', x);
+      lastLine.setAttribute('x2', g.R + 14);
+      lastLine.setAttribute('y1', y);
+      lastLine.setAttribute('y2', y);
+      tag.setAttribute('transform', `translate(${g.R + 14} ${y})`);
+      Array.prototype.forEach.call(yLabels.children, (label) => {
+        label.style.opacity = Math.abs(label.dataset.y - y) < 16 ? '0' : '';
+      });
+      tagText.textContent = v.toFixed(4);
+      valueEl.textContent = v.toFixed(4);
+      chgEl.textContent = pct(v);
+    };
+    const finishDraw = () => {
+      drawing = false;
+      setPen(last.t);
+      ink.removeAttribute('clip-path');
+      stage.classList.add('is-drawn');
+    };
+
+    /* scroll: camera, dot-as-portal, fades */
+    let opened = false;
+    const render = () => {
+      const p = introEnd ? clamp(window.scrollY / introEnd, 0, 1) : 1;
+      if (p > 0 && drawing) finishDraw();
+      stage.classList.toggle('is-moving', p > 0);
+      if (drawing) return;
+
+      const u = clamp(p / ZOOM_END, 0, 1);
+      const land = easeInOutCubic(clamp((p - ZOOM_END) / (1 - ZOOM_END), 0, 1));
+      const pan = easeInOutCubic(clamp(u / 0.7, 0, 1));
+      const sx = g.dot.x + (g.cx - g.dot.x) * pan;
+      const sy = g.dot.y + (g.cy - g.dot.y) * pan;
+      const k = Math.pow(CAM_MAX, Math.pow(u, 1.5));
+      const r = R0 * Math.pow(g.rMax / R0, easeInOutSine(u));
+
+      cam.setAttribute('transform', `translate(${sx - k * g.dot.x} ${sy - k * g.dot.y}) scale(${k})`);
+      [dot, ping].forEach((c) => {
+        c.setAttribute('cx', sx);
+        c.setAttribute('cy', sy);
+      });
+      dot.setAttribute('r', p > 0 ? r + 2 : R0); // its halo must sit just outside the portal's edge
+
+      if (u >= 1) hero.style.clipPath = 'none';
+      else if (p > 0) hero.style.clipPath = `circle(${r.toFixed(1)}px at ${(sx - g.hx).toFixed(1)}px ${(sy - g.hy).toFixed(1)}px)`;
+      else hero.style.clipPath = '';
+
+      // landing: the screen-filling green shrinks into the hero's rounded panel
+      const landing = u >= 1;
+      stage.classList.toggle('is-landing', landing);
+      if (landing) {
+        frame.setAttribute('x', g.hx * land);
+        frame.setAttribute('y', g.hy * land);
+        frame.setAttribute('width', g.W + (g.hw - g.W) * land);
+        frame.setAttribute('height', g.H + (g.hh - g.H) * land);
+        frame.setAttribute('rx', g.radius * land);
+      }
+
+      const reveal = r / g.rMax;
+      hero.style.setProperty('--intro-o', clamp((reveal - 0.12) / 0.3, 0, 1).toFixed(3));
+      if (!opened && reveal > 0.3) {
+        opened = true;
+        hero.classList.add('is-open');
+        document.dispatchEvent(new Event('intro:open'));
+      }
+
+      stage.style.setProperty('--fade', clamp(1 - u / 0.18, 0, 1).toFixed(3));
+      stage.style.visibility = p >= 1 ? 'hidden' : '';
+    };
+
+    /* "Scroll to enter" plays the same scrub for you */
+    let tween = 0;
+    const scrollTo = (y) => {
+      root.style.scrollBehavior = 'auto';
+      window.scrollTo(0, y);
+      root.style.scrollBehavior = '';
+    };
+    const playTo = (to, duration) => {
+      const from = window.scrollY;
+      const id = ++tween;
+      const t0 = performance.now();
+      const step = (now) => {
+        if (id !== tween) return;
+        const f = Math.min((now - t0) / duration, 1);
+        scrollTo(from + (to - from) * easeInOutCubic(f));
+        if (f < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    };
+    const stop = () => tween++;
+    ['wheel', 'touchstart', 'keydown'].forEach((type) =>
+      window.addEventListener(type, stop, { passive: true })
+    );
+    cue.addEventListener('click', () => playTo(introEnd, 1600));
+
+    // tabbing into the hero skips straight to it, so focus is never hidden
+    hero.addEventListener('focusin', () => {
+      if (window.scrollY < introEnd) {
+        stop();
+        scrollTo(introEnd);
+      }
+    });
+
+    layout();
+    root.classList.add('intro-ready');
+
+    let queued = false;
+    const queue = () => {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(() => {
+        queued = false;
+        render();
+      });
+    };
+    window.addEventListener('scroll', queue, { passive: true });
+    window.addEventListener(
+      'resize',
+      () => {
+        layout();
+        if (drawing) setPen(penT);
+        render();
+      },
+      { passive: true }
+    );
+
+    setPen(first.t);
+    render();
+    if (drawing) {
+      let t0 = null;
+      const draw = (now) => {
+        if (!drawing) return;
+        if (t0 === null) t0 = now;
+        const f = easeInOutSine(Math.min((now - t0) / DRAW_MS, 1));
+        if (f < 1) {
+          setPen(first.t + f * (last.t - first.t));
+          requestAnimationFrame(draw);
+        } else {
+          finishDraw();
+          render();
+        }
+      };
+      // let the fonts settle so the stage doesn't reflow mid-draw
+      (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => {
+        layout();
+        requestAnimationFrame(draw);
+      });
+    }
+  }
+
   /* ---------- Scroll-linked: hero recede, memo parallax, tape speed ---------- */
 
   if (motion) {
@@ -367,7 +694,7 @@
       nav.classList.toggle('scrolled', y > 8);
 
       if (hero) {
-        const p = clamp(y / hero.offsetHeight, 0, 1);
+        const p = clamp((y - introEnd) / hero.offsetHeight, 0, 1);
         hero.style.setProperty('--hero-p', p.toFixed(4));
       }
 
@@ -466,7 +793,7 @@
     /* storage blocked: fly anyway */
   }
 
-  if (!reduced && !flown && 'animate' in Element.prototype) {
+  const fly = () => {
     const plane = document.createElement('div');
     plane.className = 'plane-flyover';
     plane.setAttribute('aria-hidden', 'true');
@@ -487,5 +814,12 @@
       { duration: 4600, delay: 1200, easing: 'linear', fill: 'both' }
     );
     flight.onfinish = () => plane.remove();
+  };
+
+  if (!reduced && !flown && 'animate' in Element.prototype) {
+    // on the home page, hold it until the chart intro has opened onto the hero
+    const waiting = root.classList.contains('intro-on') && !document.querySelector('.hero.is-open');
+    if (waiting) document.addEventListener('intro:open', fly, { once: true });
+    else fly();
   }
 })();

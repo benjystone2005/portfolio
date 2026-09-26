@@ -43,6 +43,7 @@ Rule: green is the committed brand colour; lilac is a surface tint only. No thir
 
 ## Finance / accounting details (home)
 
+- **Chart intro:** on arrival (not when clicking Home from another page, not with a URL anchor, never under reduced motion) the home page opens on an LWX quote: the line draws itself, the price and change read the index at the pen, and a last-price tag rides the right axis. Scrolling a 150svh runway flies the camera into the last print; that dot is the hero seen through a `clip-path` circle, which grows until the screen is green and then settles into the rounded hero panel. Scroll-scrubbed, so it reverses. "Scroll to enter" plays it for you; tabbing into the hero skips it. Reads the same `data-series` as the LWX chart.
 - **Auditor's ticks:** each glance fact is checked off in sequence after load.
 - **Figures tape:** a slow crawl of real figures from the work (never invented data); pauses on hover/focus, scrolling nudges it faster, static and scrollable under reduced motion.
 - **LWX chart:** built by `js/main.js` from the `data-series` attribute on the figure. Add `["YYYY-MM-DD", value]` pairs to update it; axis, range label and end value follow. Hover or arrow keys read out each observation.
@@ -50,7 +51,7 @@ Rule: green is the committed brand colour; lilac is a surface tint only. No thir
 
 ## Motion
 
-- Home load: name rises out of its line, glance rows settle, ticks draw. Interior pages: title fades up.
+- Home load: the chart intro draws; once its dot opens onto the hero, the name rises out of its line, glance rows settle, ticks draw (straight away when the intro is skipped). Interior pages: title fades up.
 - Home scroll: hero recedes (scale + content drift); section titles and ledger rules are ruled in left to right; the LWX line is plotted with the headline figure reading the index at the pen's position; the memo page drifts with a gentle parallax.
 - Scroll reveals are armed by JS only when IntersectionObserver exists and motion is allowed; content is visible by default.
 - Stat numerals count up once. LWX clock keeps live time. Plane flyover once per visit.

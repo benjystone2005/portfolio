@@ -1,4 +1,4 @@
-/* Benjy Stone portfolio — shared interactions. No dependencies. */
+/* Benjamin Stone portfolio — shared interactions. No dependencies. */
 
 (function () {
   'use strict';

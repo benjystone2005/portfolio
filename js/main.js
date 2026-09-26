@@ -10,6 +10,7 @@
   const easeOutQuart = (t) => 1 - Math.pow(1 - t, 4);
   const easeInOutSine = (t) => -(Math.cos(Math.PI * t) - 1) / 2;
   const easeInOutCubic = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+  const easeOutExpo = (t) => (t >= 1 ? 1 : 1 - Math.pow(2, -10 * t));
 
   /* ---------- Nav: scrolled state + mobile toggle ---------- */
 
@@ -40,8 +41,8 @@
   /* ---------- Scroll reveals ----------
      Content is visible by default; hidden states only apply under .js-reveal.
      .reveal fades up (interior pages) and is shown at once if already on
-     screen. [data-reveal] hooks the home page's ruled-in effects, which play
-     even when on screen at load. */
+     screen. [data-reveal] hooks the home page's ruled-in effects, and
+     .contact the closing panel's; these play even when on screen at load. */
 
   if (motion) {
     const observer = new IntersectionObserver(
@@ -62,7 +63,7 @@
         observer.observe(el);
       }
     });
-    document.querySelectorAll('[data-reveal]').forEach((el) => observer.observe(el));
+    document.querySelectorAll('[data-reveal], .contact').forEach((el) => observer.observe(el));
     document.documentElement.classList.add('js-reveal');
   }
 
@@ -345,22 +346,54 @@
     drawObserver.observe(plot);
   }
 
+  /* ---------- Checklist board (home) ----------
+     The projects sit on a checklist; each box is ticked as its project
+     scrolls up past the lower third of the screen, and the tally counts up
+     once the tick lands. Ticked in the HTML, so without motion the board
+     simply reads as done. */
+
+  const board = document.querySelector('[data-board]');
+  if (board && motion) {
+    const items = board.querySelectorAll('[data-board-item]');
+    const doneEl = board.querySelector('[data-board-done]');
+    let done = 0;
+    const setDone = (n) => {
+      done = n;
+      if (doneEl) doneEl.textContent = n;
+      board.style.setProperty('--done', (n / items.length).toFixed(3));
+    };
+    setDone(0);
+
+    const checkObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          checkObserver.unobserve(entry.target);
+          entry.target.classList.add('is-checked');
+          setTimeout(() => setDone(done + 1), 420);
+        });
+      },
+      { rootMargin: '0px 0px -35% 0px' }
+    );
+    items.forEach((item) => checkObserver.observe(item));
+  }
+
   /* ---------- Chart intro (home) ----------
-     Armed by the <head> script (.intro-on). The LWX quote draws itself on
-     load; scrolling the runway then flies the camera into the last print.
-     That dot is the hero seen through a clip-path circle, which grows until
-     the hero is fully open. Scroll-scrubbed, so it also plays in reverse. */
+     Armed by the <head> script (.intro-on). Plays on a clock: the LWX quote
+     draws itself, holds on the last print for a beat, then the camera flies
+     into that dot. The dot is the hero seen through a clip-path circle, which
+     grows until the screen is green and then settles into the hero panel.
+     Scrolling, a key or a tap hurries it along; tabbing into the hero skips
+     it. Afterwards the stage is removed and the page is the plain home page. */
 
   const root = document.documentElement;
   const intro = document.querySelector('[data-intro]');
-  let introEnd = 0; // scroll the intro consumes; the hero's own effects start after it
 
   if (intro && root.classList.contains('intro-on')) {
     try {
       setupIntro();
     } catch (e) {
-      root.classList.remove('intro-on');
-      introEnd = 0;
+      root.classList.remove('intro-on', 'intro-playing');
       const hero = intro.querySelector('[data-hero]');
       if (hero) hero.style.clipPath = '';
     }
@@ -377,8 +410,6 @@
     const hero = intro.querySelector('[data-hero]');
     const stage = intro.querySelector('.intro__stage');
     const plotBox = intro.querySelector('[data-intro-plot]');
-    const runway = intro.querySelector('.intro__runway');
-    const cue = intro.querySelector('[data-intro-enter]');
     const valueEl = intro.querySelector('[data-intro-value]');
     const chgEl = intro.querySelector('[data-intro-chg]');
 
@@ -386,9 +417,13 @@
     const AXIS_W = 76; // right-hand price axis
     const X_H = 30; // month labels under the plot
     const R0 = 7; // dot radius at rest
-    const ZOOM_END = 0.8; // share of the runway spent zooming; the rest settles the panel
+    const ZOOM_END = 0.8; // share of the fly-in spent zooming; the rest settles the panel
     const CAM_MAX = 40; // how far the camera flies into the chart
-    const DRAW_MS = 1900;
+    const DRAW_MS = 1500; // the line draws itself
+    const HOLD_MS = 550; // a beat on the last print
+    const FLY_MS = 1900; // into the dot and down onto the hero
+    const HURRY = 4; // playback rate once the visitor scrolls, taps or presses a key
+    const END = DRAW_MS + HOLD_MS + FLY_MS;
 
     const first = series[0];
     const last = series[series.length - 1];
@@ -455,7 +490,7 @@
       const L = plotBox.offsetLeft + parseFloat(pad.paddingLeft);
       const R = plotBox.offsetLeft + plotBox.offsetWidth - parseFloat(pad.paddingRight) - AXIS_W;
       const T = plotBox.offsetTop + 12;
-      const B = Math.max(T + 40, plotBox.offsetTop + plotBox.offsetHeight - X_H);
+      const B = Math.max(T + 40, plotBox.offsetTop + plotBox.offsetHeight - parseFloat(pad.paddingBottom) - X_H);
       const xOf = (t) => L + ((t - first.t) / (last.t - first.t)) * (R - L);
       const yOf = (v) => T + ((hi - v) / (hi - lo)) * (B - T);
       svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
@@ -505,7 +540,6 @@
         rMax: Math.hypot(Math.max(cx, W - cx), Math.max(cy, H - cy)) + 2,
         radius: parseFloat(getComputedStyle(hero).borderTopLeftRadius) || 0,
       };
-      introEnd = runway.offsetHeight;
     };
 
     /* the pen: draws the line, moves the dot, prices the quote */
@@ -541,14 +575,17 @@
       stage.classList.add('is-drawn');
     };
 
-    /* scroll: camera, dot-as-portal, fades */
+    /* the fly-in, p from 0 to 1: camera, dot-as-portal, fades */
+    let flyP = 0;
     let opened = false;
-    const render = () => {
-      const p = introEnd ? clamp(window.scrollY / introEnd, 0, 1) : 1;
-      if (p > 0 && drawing) finishDraw();
-      stage.classList.toggle('is-moving', p > 0);
-      if (drawing) return;
-
+    const open = () => {
+      opened = true;
+      hero.classList.add('is-open');
+      document.dispatchEvent(new Event('intro:open'));
+    };
+    const fly = (p) => {
+      flyP = p;
+      stage.classList.add('is-moving');
       const u = clamp(p / ZOOM_END, 0, 1);
       const land = easeInOutCubic(clamp((p - ZOOM_END) / (1 - ZOOM_END), 0, 1));
       const pan = easeInOutCubic(clamp(u / 0.7, 0, 1));
@@ -562,11 +599,10 @@
         c.setAttribute('cx', sx);
         c.setAttribute('cy', sy);
       });
-      dot.setAttribute('r', p > 0 ? r + 2 : R0); // its halo must sit just outside the portal's edge
+      dot.setAttribute('r', r + 2); // its halo must sit just outside the portal's edge
 
-      if (u >= 1) hero.style.clipPath = 'none';
-      else if (p > 0) hero.style.clipPath = `circle(${r.toFixed(1)}px at ${(sx - g.hx).toFixed(1)}px ${(sy - g.hy).toFixed(1)}px)`;
-      else hero.style.clipPath = '';
+      hero.style.clipPath =
+        u >= 1 ? 'none' : `circle(${r.toFixed(1)}px at ${(sx - g.hx).toFixed(1)}px ${(sy - g.hy).toFixed(1)}px)`;
 
       // landing: the screen-filling green shrinks into the hero's rounded panel
       const landing = u >= 1;
@@ -581,101 +617,463 @@
 
       const reveal = r / g.rMax;
       hero.style.setProperty('--intro-o', clamp((reveal - 0.12) / 0.3, 0, 1).toFixed(3));
-      if (!opened && reveal > 0.3) {
-        opened = true;
-        hero.classList.add('is-open');
-        document.dispatchEvent(new Event('intro:open'));
-      }
+      if (!opened && reveal > 0.3) open();
 
       stage.style.setProperty('--fade', clamp(1 - u / 0.18, 0, 1).toFixed(3));
-      stage.style.visibility = p >= 1 ? 'hidden' : '';
     };
 
-    /* "Scroll to enter" plays the same scrub for you */
-    let tween = 0;
-    const scrollTo = (y) => {
-      root.style.scrollBehavior = 'auto';
-      window.scrollTo(0, y);
-      root.style.scrollBehavior = '';
+    const relayout = () => {
+      layout();
+      setPen(drawing ? penT : last.t);
+      if (flyP > 0) fly(flyP);
     };
-    const playTo = (to, duration) => {
-      const from = window.scrollY;
-      const id = ++tween;
-      const t0 = performance.now();
-      const step = (now) => {
-        if (id !== tween) return;
-        const f = Math.min((now - t0) / duration, 1);
-        scrollTo(from + (to - from) * easeInOutCubic(f));
-        if (f < 1) requestAnimationFrame(step);
-      };
-      requestAnimationFrame(step);
-    };
-    const stop = () => tween++;
-    ['wheel', 'touchstart', 'keydown'].forEach((type) =>
-      window.addEventListener(type, stop, { passive: true })
-    );
-    cue.addEventListener('click', () => playTo(introEnd, 1600));
 
-    // tabbing into the hero skips straight to it, so focus is never hidden
-    hero.addEventListener('focusin', () => {
-      if (window.scrollY < introEnd) {
-        stop();
-        scrollTo(introEnd);
+    /* the clock: draw, hold, fly. Input speeds it up rather than cutting it */
+    let clock = 0;
+    let rate = 1;
+    let prev = null;
+    let done = false;
+    const hurry = () => {
+      rate = HURRY;
+    };
+    const skip = () => {
+      clock = END;
+      if (prev === null) finish(); // before the clock has started
+    };
+    const inputs = ['wheel', 'touchstart', 'pointerdown', 'keydown'];
+
+    const finish = () => {
+      if (done) return;
+      done = true;
+      if (!opened) open();
+      inputs.forEach((type) => window.removeEventListener(type, hurry));
+      window.removeEventListener('resize', relayout);
+      hero.removeEventListener('focusin', skip);
+      stage.remove();
+      hero.style.clipPath = '';
+      hero.style.removeProperty('--intro-o');
+      root.classList.remove('intro-on', 'intro-playing');
+      if ('scrollRestoration' in history) history.scrollRestoration = 'auto';
+    };
+
+    const tick = (now) => {
+      if (done) return;
+      try {
+        // capped, so a stalled frame or a background tab doesn't skip the show
+        if (prev !== null) clock += Math.min(now - prev, 64) * rate;
+        prev = now;
+        if (clock < DRAW_MS) {
+          setPen(first.t + easeInOutSine(clock / DRAW_MS) * (last.t - first.t));
+        } else {
+          if (drawing) finishDraw();
+          const p = clamp((clock - DRAW_MS - HOLD_MS) / FLY_MS, 0, 1);
+          if (p > 0) fly(p);
+          if (p >= 1) {
+            finish();
+            return;
+          }
+        }
+        requestAnimationFrame(tick);
+      } catch (e) {
+        finish();
       }
-    });
+    };
 
     layout();
-    root.classList.add('intro-ready');
-
-    let queued = false;
-    const queue = () => {
-      if (queued) return;
-      queued = true;
-      requestAnimationFrame(() => {
-        queued = false;
-        render();
-      });
-    };
-    window.addEventListener('scroll', queue, { passive: true });
-    window.addEventListener(
-      'resize',
-      () => {
-        layout();
-        if (drawing) setPen(penT);
-        render();
-      },
-      { passive: true }
-    );
-
     setPen(first.t);
-    render();
-    if (drawing) {
-      let t0 = null;
-      const draw = (now) => {
-        if (!drawing) return;
-        if (t0 === null) t0 = now;
-        const f = easeInOutSine(Math.min((now - t0) / DRAW_MS, 1));
-        if (f < 1) {
-          setPen(first.t + f * (last.t - first.t));
-          requestAnimationFrame(draw);
-        } else {
-          finishDraw();
-          render();
+    root.classList.add('intro-ready', 'intro-playing');
+    root.style.scrollBehavior = 'auto';
+    window.scrollTo(0, 0);
+    root.style.scrollBehavior = '';
+
+    inputs.forEach((type) => window.addEventListener(type, hurry, { passive: true }));
+    // tabbing into the hero skips straight to it, so focus is never hidden
+    hero.addEventListener('focusin', skip);
+    window.addEventListener('resize', relayout, { passive: true });
+
+    // let the fonts settle so the stage doesn't reflow mid-draw, but don't
+    // hold the show for a slow font; re-measure if one lands later
+    const fonts = document.fonts ? document.fonts.ready : Promise.resolve();
+    Promise.race([fonts, new Promise((resolve) => setTimeout(resolve, 1200))]).then(() => {
+      if (done) return;
+      relayout();
+      requestAnimationFrame(tick);
+    });
+    fonts.then(() => {
+      if (!done) relayout();
+    });
+  }
+
+  /* ---------- Pixel name (home hero) ----------
+     The name is redrawn as a grid of pixels on a canvas laid over the
+     heading. The heading keeps its text, transparent, for screen readers,
+     search and copying. Each letter is rastered where the browser set it,
+     so the pixels follow the real type. The pixels gather into the name
+     left to right once the hero is on screen (after the chart intro, if it
+     plays), shy away from the pointer and spring back, and drift apart as
+     the hero scrolls away. Static pixels under reduced motion; the plain
+     heading if anything fails. Armed early by the <head> script (.pixel-on). */
+
+  const pixelEl = document.querySelector('[data-pixel-name]');
+  if (pixelEl) {
+    try {
+      pixelName(pixelEl);
+    } catch (e) {
+      root.classList.remove('pixel-on');
+    }
+  }
+
+  function pixelName(h1) {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext && canvas.getContext('2d');
+    if (!ctx || !document.createRange) throw new Error('pixel name: no canvas');
+
+    const hero = h1.closest('[data-hero]') || h1;
+    const PAD = 72; // canvas bleed around the heading: room for the pixels to move
+    const DUR = 900; // each pixel's flight into place
+    const SWEEP = 520; // the left-to-right stagger across the name
+    const JITTER = 140; // and a little disorder within it
+    const K = 15 * 15; // pointer spring stiffness (omega squared)...
+    const C = 2 * 0.55 * 15; // ...and damping: just under-damped, so they settle with a small wobble
+
+    let pixels = [];
+    let W = 0;
+    let H = 0;
+    let dpr = 1;
+    let dot = 3; // drawn size of a pixel; the grid pitch less a hairline gap
+    let reach = 0; // pointer radius
+    let push = 0; // how far the pixels right under the pointer move
+    let drift = 0; // how far they wander once the hero has scrolled away
+    let hover = 0; // how far they bob near the pointer
+    let ink = '#fff';
+    let pointer = null;
+    let scatter = 0;
+    let phase = 'wait'; // wait -> enter -> live
+    let enterAt = 0;
+    let running = false;
+    let prev = 0;
+    let built = false;
+    let fallback = false; // drawn before the real face arrived
+
+    canvas.className = 'pixel-name';
+    canvas.setAttribute('aria-hidden', 'true');
+    h1.appendChild(canvas);
+    root.classList.add('pixel-on', 'pixel-ready');
+
+    const build = () => {
+      const w = h1.offsetWidth;
+      const h = h1.offsetHeight;
+      if (!w || !h) return;
+      const box = h1.getBoundingClientRect();
+      const s = box.width / w || 1; // the hero may be scaled mid-scroll
+      const cs = getComputedStyle(h1);
+      const fs = parseFloat(cs.fontSize);
+      fallback = !!document.fonts && !document.fonts.check(`400 ${fs}px "EB Garamond"`);
+      const cell = Math.max(3, Math.round(fs / 18));
+      dpr = Math.min(window.devicePixelRatio || 1, 3);
+      dot = cell - Math.max(1 / dpr, cell * 0.16);
+      reach = fs * 1.2;
+      push = fs * 0.12;
+      drift = fs * 0.8;
+      hover = fs * 0.03;
+      W = w + PAD * 2;
+      H = h + PAD * 2;
+      canvas.width = Math.round(W * dpr);
+      canvas.height = Math.round(H * dpr);
+      canvas.style.cssText = `left:${-PAD}px;top:${-PAD}px;width:${W}px;height:${H}px`;
+
+      // the hero's text colour; fall back if this canvas can't parse it
+      ctx.fillStyle = '#010203';
+      ctx.fillStyle = getComputedStyle(hero).color;
+      ink = ctx.fillStyle === '#010203' ? '#f4f8f3' : ctx.fillStyle;
+
+      // raster the letters, supersampled so each cell's coverage is measured
+      const SS = 2;
+      const off = document.createElement('canvas');
+      off.width = Math.ceil(W * SS);
+      off.height = Math.ceil(H * SS);
+      const o = off.getContext('2d', { willReadFrequently: true });
+      o.scale(SS, SS);
+      o.font = `${cs.fontStyle} ${cs.fontWeight} ${fs}px ${cs.fontFamily}`;
+      o.textBaseline = 'alphabetic';
+      // a hairline stroke thickens Garamond's thin strokes to a pixel or more
+      o.lineWidth = fs * 0.024;
+      o.lineJoin = 'round';
+      const m = o.measureText('Bj');
+      const asc = m.fontBoundingBoxAscent;
+      const desc = m.fontBoundingBoxDescent;
+      const base = asc && desc ? asc / (asc + desc) : 0.8; // baseline, as a share of a letter's box
+      const range = document.createRange();
+      h1.querySelectorAll('.row > span').forEach((span) => {
+        const text = span.firstChild;
+        if (!text || text.nodeType !== 3) return;
+        for (let i = 0; i < text.length; i++) {
+          range.setStart(text, i);
+          range.setEnd(text, i + 1);
+          const r = range.getBoundingClientRect();
+          const gx = (r.left - box.left) / s + PAD;
+          const gy = (r.top - box.top + r.height * base) / s + PAD;
+          o.fillText(text.data[i], gx, gy);
+          o.strokeText(text.data[i], gx, gy);
         }
+      });
+
+      const data = o.getImageData(0, 0, off.width, off.height).data;
+      const step = cell * SS;
+      const cols = Math.floor(off.width / step);
+      const rows = Math.floor(off.height / step);
+      const on = new Uint8Array(cols * rows);
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          let sum = 0;
+          for (let y = r * step; y < (r + 1) * step; y++) {
+            let i = (y * off.width + c * step) * 4 + 3;
+            for (let x = 0; x < step; x++, i += 4) sum += data[i];
+          }
+          on[r * cols + c] = sum >= step * step * 255 * 0.42 ? 1 : 0;
+        }
+      }
+      // a lone pixel is a quantised serif tip; at this size it reads as dust
+      const lone = (r, c) => {
+        for (let y = Math.max(0, r - 1); y <= Math.min(rows - 1, r + 1); y++) {
+          for (let x = Math.max(0, c - 1); x <= Math.min(cols - 1, c + 1); x++) {
+            if ((y !== r || x !== c) && on[y * cols + x]) return false;
+          }
+        }
+        return true;
       };
-      // let the fonts settle so the stage doesn't reflow mid-draw
-      (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => {
-        layout();
-        requestAnimationFrame(draw);
+
+      const next = [];
+      let minX = Infinity;
+      let maxX = -Infinity;
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          if (!on[r * cols + c] || lone(r, c)) continue;
+          const a = Math.random() * Math.PI * 2;
+          const far = fs * (0.25 + Math.random() * 0.75);
+          const tilt = (Math.random() - 0.5) * 0.6; // so a push isn't perfectly radial
+          const cx = c * cell + cell / 2;
+          minX = Math.min(minX, cx);
+          maxX = Math.max(maxX, cx);
+          next.push({
+            x: cx - dot / 2, // resting top-left
+            y: r * cell + cell / 2 - dot / 2,
+            cx,
+            cy: r * cell + cell / 2,
+            ox: 0, // spring offset from rest, and its velocity
+            oy: 0,
+            vx: 0,
+            vy: 0,
+            f: 0.75 + Math.random() * 0.5,
+            phase: Math.random() * Math.PI * 2, // for the float near the pointer
+            tc: Math.cos(tilt),
+            ts: Math.sin(tilt),
+            ex: Math.cos(a) * far, // where it flies in from
+            ey: Math.sin(a) * far,
+            sx: Math.random() * 2 - 1, // where it drifts off to
+            sy: Math.random() * 2 - 1.4,
+            delay: 0,
+          });
+        }
+      }
+      const extent = maxX - minX || 1;
+      next.forEach((p) => {
+        p.delay = ((p.cx - minX) / extent) * SWEEP + Math.random() * JITTER;
+      });
+      pixels = next;
+      built = true;
+    };
+
+    const draw = (now) => {
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (phase === 'wait') return;
+      ctx.fillStyle = ink;
+      const t = now - enterAt;
+      const wander = scatter * scatter * drift;
+      const push2 = push * push;
+      let alpha = 1;
+      ctx.globalAlpha = 1;
+      for (let i = 0; i < pixels.length; i++) {
+        const p = pixels[i];
+        let x = p.x + p.ox + p.sx * wander;
+        let y = p.y + p.oy + p.sy * wander;
+        let size = dot;
+        let a = 1;
+        if (phase === 'enter') {
+          const e = clamp((t - p.delay) / DUR, 0, 1);
+          if (e <= 0) continue;
+          const q = easeOutExpo(e);
+          x += p.ex * (1 - q);
+          y += p.ey * (1 - q);
+          size *= 0.6 + 0.4 * q;
+          a = Math.min(1, e * 3);
+        }
+        // pixels the pointer has pushed lift a little off the page
+        size *= 1 + 0.35 * Math.min(1, (p.ox * p.ox + p.oy * p.oy) / push2);
+        if (a !== alpha) ctx.globalAlpha = alpha = a;
+        const d = Math.max(1, Math.round(size * dpr));
+        ctx.fillRect(Math.round((x + (dot - size) / 2) * dpr), Math.round((y + (dot - size) / 2) * dpr), d, d);
+      }
+    };
+
+    const tick = (now) => {
+      const dt = Math.min((now - prev) / 1000, 1 / 30);
+      prev = now;
+      if (phase === 'enter' && now - enterAt > SWEEP + JITTER + DUR) phase = 'live';
+      let busy = phase === 'enter';
+      const r2 = reach * reach;
+      for (let i = 0; i < pixels.length; i++) {
+        const p = pixels[i];
+        let tx = 0;
+        let ty = 0;
+        if (pointer) {
+          const dx = p.cx - pointer.x;
+          const dy = p.cy - pointer.y;
+          const d2 = dx * dx + dy * dy;
+          if (d2 < r2) {
+            const d = Math.sqrt(d2) || 1;
+            const k = 1 - d / reach;
+            const f = (push * k * k * p.f) / d;
+            // pushed aside, and hovering: a small bob while the pointer is near
+            tx = (dx * p.tc - dy * p.ts) * f + Math.sin(now * 0.004 + p.phase) * k * hover;
+            ty = (dx * p.ts + dy * p.tc) * f + Math.cos(now * 0.0033 + p.phase * 1.3) * k * hover;
+            busy = true;
+          }
+        }
+        p.vx += (K * (tx - p.ox) - C * p.vx) * dt;
+        p.vy += (K * (ty - p.oy) - C * p.vy) * dt;
+        p.ox += p.vx * dt;
+        p.oy += p.vy * dt;
+        if (Math.abs(p.vx) + Math.abs(p.vy) > 1 || Math.abs(tx - p.ox) + Math.abs(ty - p.oy) > 0.1) {
+          busy = true;
+        } else {
+          p.ox = tx;
+          p.oy = ty;
+          p.vx = 0;
+          p.vy = 0;
+        }
+      }
+      draw(now);
+      if (busy) requestAnimationFrame(tick);
+      else running = false;
+    };
+
+    const wake = () => {
+      if (running || reduced) return;
+      running = true;
+      prev = performance.now();
+      requestAnimationFrame(tick);
+    };
+
+    const rebuild = () => {
+      build();
+      if (reduced) draw(0);
+      else wake();
+    };
+
+    const start = () => {
+      try {
+        build();
+        if (!built) throw new Error('pixel name: nothing to draw');
+      } catch (e) {
+        canvas.remove();
+        root.classList.remove('pixel-on');
+        return;
+      }
+      if (reduced) {
+        phase = 'live';
+        draw(0);
+        return;
+      }
+      scatter = clamp(window.scrollY / (hero.offsetHeight || 1), 0, 1); // a reload may land mid-page
+      const go = () => {
+        phase = 'enter';
+        enterAt = performance.now();
+        wake();
+      };
+      // on the home page, wait until the chart intro has opened onto the hero
+      if (root.classList.contains('intro-on') && !hero.classList.contains('is-open')) {
+        document.addEventListener('intro:open', go, { once: true });
+      } else {
+        go();
+      }
+    };
+
+    if (!reduced) {
+      const aim = (e) => {
+        const r = canvas.getBoundingClientRect();
+        const s = r.width / W || 1;
+        pointer = { x: (e.clientX - r.left) / s, y: (e.clientY - r.top) / s };
+        wake();
+      };
+      const release = () => {
+        pointer = null;
+        wake();
+      };
+      hero.addEventListener('pointermove', aim, { passive: true });
+      hero.addEventListener('pointerdown', aim, { passive: true });
+      hero.addEventListener('pointerleave', release);
+      ['pointerup', 'pointercancel'].forEach((type) =>
+        hero.addEventListener(type, (e) => {
+          if (e.pointerType !== 'mouse') release(); // a finger doesn't hover
+        })
+      );
+      window.addEventListener(
+        'scroll',
+        () => {
+          const s = clamp(window.scrollY / (hero.offsetHeight || 1), 0, 1);
+          if (Math.abs(s - scatter) > 0.0005) {
+            scatter = s;
+            wake();
+          }
+        },
+        { passive: true }
+      );
+    }
+
+    if ('ResizeObserver' in window) {
+      let queued = false;
+      new ResizeObserver(() => {
+        if (!built || queued) return;
+        queued = true;
+        requestAnimationFrame(() => {
+          queued = false;
+          rebuild();
+        });
+      }).observe(h1);
+    } else {
+      window.addEventListener('resize', () => built && rebuild(), { passive: true });
+    }
+
+    // draw with the real face: wait for it, but not for long; redraw if it lands late
+    const fs = parseFloat(getComputedStyle(h1).fontSize);
+    const face = document.fonts && document.fonts.load ? document.fonts.load(`400 ${fs}px "EB Garamond"`) : Promise.resolve();
+    Promise.race([face, new Promise((resolve) => setTimeout(resolve, 1500))]).then(start, start);
+    if (document.fonts) {
+      document.fonts.ready.then(() => {
+        if (built && fallback) rebuild();
       });
     }
   }
 
-  /* ---------- Scroll-linked: hero recede, memo parallax, tape speed ---------- */
+  /* ---------- Scroll-linked: reading line, hero recede, memo parallax,
+     contact arrival, ball roll, tape speed ---------- */
+
+  // a hairline under the nav that fills as you read down the page
+  const progress = document.createElement('span');
+  progress.className = 'site-nav__progress';
+  progress.setAttribute('aria-hidden', 'true');
+  nav.appendChild(progress);
+  const setProgress = (y, maxY) => {
+    progress.style.transform = `scaleX(${maxY > 0 ? clamp(y / maxY, 0, 1).toFixed(4) : 0})`;
+  };
 
   if (motion) {
     const hero = document.querySelector('[data-hero]');
     const parallax = Array.prototype.slice.call(document.querySelectorAll('[data-parallax]'));
+    const contacts = Array.prototype.slice.call(document.querySelectorAll('.contact'));
+    const ball = document.querySelector('.cricket-ball');
     const track = document.querySelector('.tape__track');
     const tapeAnim = track && track.getAnimations ? track.getAnimations()[0] : null;
 
@@ -684,26 +1082,49 @@
     let rate = 1;
     let ticking = false;
     let decaying = false;
+    let ballAngle = null;
+    let rolling = false;
 
     const update = () => {
       ticking = false;
       const y = window.scrollY;
       const now = performance.now();
       const vh = window.innerHeight;
+      const maxY = root.scrollHeight - vh;
+
+      // measure everything first, then write, so the page is laid out once
+      const heroH = hero ? hero.offsetHeight : 0;
+      const parRects = parallax.map((node) => node.getBoundingClientRect());
+      // the closing panel grows into place, a mirror of the hero receding:
+      // from its top meeting the bottom of the screen until it's well in (or
+      // the page runs out)
+      const arrivals = contacts.map((node) => {
+        const start = node.getBoundingClientRect().top + y - vh;
+        const end = Math.min(start + vh * 0.55, maxY);
+        const p = end - start < 1 ? 1 : clamp((y - start) / (end - start), 0, 1);
+        return 1 - (1 - p) * (1 - p);
+      });
 
       nav.classList.toggle('scrolled', y > 8);
+      setProgress(y, maxY);
 
       if (hero) {
-        const p = clamp((y - introEnd) / hero.offsetHeight, 0, 1);
-        hero.style.setProperty('--hero-p', p.toFixed(4));
+        hero.style.setProperty('--hero-p', clamp(y / heroH, 0, 1).toFixed(4));
       }
 
-      parallax.forEach((node) => {
-        const r = node.getBoundingClientRect();
+      parallax.forEach((node, i) => {
+        const r = parRects[i];
         if (r.bottom < -100 || r.top > vh + 100) return;
         const off = (r.top + r.height / 2 - vh / 2) / (vh / 2 + r.height / 2);
         node.style.setProperty('--par', (-clamp(off, -1, 1) * 28).toFixed(2));
       });
+
+      contacts.forEach((node, i) => node.style.setProperty('--arrive', arrivals[i].toFixed(4)));
+
+      if (ball && !rolling) {
+        rolling = true;
+        requestAnimationFrame(roll);
+      }
 
       // tape: scrolling nudges the crawl faster, then it eases back
       if (tapeAnim) {
@@ -728,6 +1149,20 @@
       tapeAnim.playbackRate = rate;
     };
 
+    // the cricket ball's seam rolls with the page and coasts to a stop after it
+    const roll = () => {
+      const target = -24 + window.scrollY * 0.35;
+      if (ballAngle === null) ballAngle = target;
+      ballAngle += (target - ballAngle) * 0.1;
+      if (Math.abs(target - ballAngle) < 0.05) {
+        ballAngle = target;
+        rolling = false;
+      } else {
+        requestAnimationFrame(roll);
+      }
+      ball.style.setProperty('--roll', ballAngle.toFixed(2) + 'deg');
+    };
+
     window.addEventListener(
       'scroll',
       () => {
@@ -741,8 +1176,12 @@
     window.addEventListener('resize', update, { passive: true });
     update();
   } else {
-    const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 8);
+    const onScroll = () => {
+      nav.classList.toggle('scrolled', window.scrollY > 8);
+      setProgress(window.scrollY, root.scrollHeight - window.innerHeight);
+    };
     window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
     onScroll();
   }
 

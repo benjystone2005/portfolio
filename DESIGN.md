@@ -34,16 +34,20 @@ Rule: green is the committed brand colour; lilac is a surface tint only. No thir
 
 ## Components
 
-- **Nav:** sticky, solid canvas, hairline appears on scroll. Ink pill "Connect on LinkedIn".
+- **Nav:** sticky, solid canvas, hairline appears on scroll and a green reading line fills along it as you go down the page. Ink pill "Connect on LinkedIn".
+- **Pixel name (home hero):** the name is redrawn on a canvas as a grid of square pixels in `--on-brand`, rastered letter by letter from where the browser set the real heading, so it follows the type exactly. The heading keeps its text (transparent) for screen readers, search and copying; forced-colours mode shows the text instead. Static under reduced motion; the plain heading if the canvas can't take over.
 - **Buttons:** `.btn--ink` (primary on light), `.btn--light` (primary on green), `.btn--outline`, `.btn--ghost-light`. Text links use `.link`.
 - **Glance list (home hero):** label/value rows, the fastest scan of the candidate.
 - **Feature panel:** text + real imagery (live LWX screenshot, memo page 1).
+- **Checklist board (home projects):** the two feature panels sit on a white sheet clipped to a green board. A ruled margin holds a numbered box per project; a tally and meter in the sheet's header count them off.
 - **Entry:** date/place column + org (serif), role (green), bulleted points. Used on Experience and Beyond Finance.
 - **Contact panel:** closes every page with a page-specific line, two actions and copyable details.
+- **Index list (home "More about me"):** hovering a row rules in a sage highlight left to right; it fades on the way out.
 
 ## Finance / accounting details (home)
 
-- **Chart intro:** on arrival (not when clicking Home from another page, not with a URL anchor, never under reduced motion) the home page opens on an LWX quote: the line draws itself, the price and change read the index at the pen, and a last-price tag rides the right axis. Scrolling a 150svh runway flies the camera into the last print; that dot is the hero seen through a `clip-path` circle, which grows until the screen is green and then settles into the rounded hero panel. Scroll-scrubbed, so it reverses. "Scroll to enter" plays it for you; tabbing into the hero skips it. Reads the same `data-series` as the LWX chart.
+- **Chart intro:** on arrival or reload (not when clicking Home from another page, not on Back, not with a URL anchor, never under reduced motion) the home page opens on an LWX quote: the line draws itself (1.5s), the price and change read the index at the pen, and a last-price tag rides the right axis. It holds on the last print for one ping, then plays on its own: the camera flies into that dot, which is the hero seen through a `clip-path` circle, growing until the screen is green and settling into the rounded hero panel (1.9s). About 4s in all; the page holds still meanwhile. Any scroll, key or tap plays the rest at 4x; tabbing into the hero skips it. When it ends the stage is removed and the page is the plain home page. Reads the same `data-series` as the LWX chart.
+- **Checklist ticks:** each project's box fills and its tick is drawn as the project scrolls past the lower third of the screen; the tally and meter catch up once the tick lands. Ticked in the HTML, so without motion the board reads as done.
 - **Auditor's ticks:** each glance fact is checked off in sequence after load.
 - **Figures tape:** a slow crawl of real figures from the work (never invented data); pauses on hover/focus, scrolling nudges it faster, static and scrollable under reduced motion.
 - **LWX chart:** built by `js/main.js` from the `data-series` attribute on the figure. Add `["YYYY-MM-DD", value]` pairs to update it; axis, range label and end value follow. Hover or arrow keys read out each observation.
@@ -51,8 +55,11 @@ Rule: green is the committed brand colour; lilac is a surface tint only. No thir
 
 ## Motion
 
-- Home load: the chart intro draws; once its dot opens onto the hero, the name rises out of its line, glance rows settle, ticks draw (straight away when the intro is skipped). Interior pages: title fades up.
-- Home scroll: hero recedes (scale + content drift); section titles and ledger rules are ruled in left to right; the LWX line is plotted with the headline figure reading the index at the pen's position; the memo page drifts with a gentle parallax.
+- Home load: the chart intro draws and flies into its last dot; once the dot opens onto the hero, the name's pixels gather into it left to right, like scattered data points settling into one figure; glance rows settle, ticks draw (straight away when the intro is skipped). Interior pages: title fades up.
+- Pixel name: pixels near the pointer are pushed aside, lift slightly and bob while it's near, then spring back (a just-under-damped spring, so they settle with a small wobble). A finger does the same while it's down. The loop sleeps whenever nothing is moving.
+- Home scroll: hero recedes (scale + content drift) and the name's pixels drift apart; section titles and ledger rules are ruled in left to right; the LWX line is plotted with the headline figure reading the index at the pen's position; the memo page drifts with a gentle parallax.
+- Every page: the contact panel grows into place as you reach it (scale 0.95 to 1, content drift), the mirror of the hero receding, and its line is ruled in. Moving between pages, the nav holds still while the page under it crossfades up (cross-document view transitions; a plain page load where unsupported).
+- Interior scroll: group titles are ruled in like the home section titles; each entry's top rule is drawn, then its date, heading and points follow in a short stagger; headline figures on Projects are ruled in one by one; skill and interest tags come in one after another. Entrances fade up out of a slight blur. The Projects memo page has the home page's parallax. The cricket ball's seam rolls with the page and coasts to a stop; the light on it stays put.
 - Scroll reveals are armed by JS only when IntersectionObserver exists and motion is allowed; content is visible by default.
 - Stat numerals count up once. LWX clock keeps live time. Plane flyover once per visit.
 - Everything collapses under `prefers-reduced-motion`.

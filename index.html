@@ -11,18 +11,25 @@
   <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400..600&family=Figtree:wght@400..700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
   <script>
-    /* Arm the chart intro before first paint: only when arriving from outside
-       the site (not clicking Home from another page), with no anchor, and
-       motion allowed. Without it the page renders exactly as before. */
+    /* Arm the chart intro before first paint: when arriving from outside the
+       site or reloading (not clicking Home from another page, not Back), with
+       no anchor, and motion allowed. Without it the page renders exactly as
+       before. The intro starts at the top, so a reload doesn't restore the
+       old scroll position while it plays. */
     (function () {
+      /* the hero name is drawn in pixels; hide its live text from the first
+         paint so it doesn't flash before the canvas takes over */
+      document.documentElement.classList.add('pixel-on');
       try {
         var nav = performance.getEntriesByType('navigation')[0];
+        var type = nav ? nav.type : 'navigate';
         var fromSite = document.referrer &&
-          new URL(document.referrer).origin === location.origin &&
-          (!nav || nav.type === 'navigate');
-        if (!fromSite && !location.hash &&
+          new URL(document.referrer).origin === location.origin;
+        var arrived = type === 'reload' || (type === 'navigate' && !fromSite);
+        if (arrived && !location.hash &&
             !matchMedia('(prefers-reduced-motion: reduce)').matches) {
           document.documentElement.classList.add('intro-on');
+          if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
         }
       } catch (e) {}
     })();
@@ -50,88 +57,84 @@
 
   <main id="main">
 
-    <!-- INTRO: the LWX quote draws itself, then scrolling zooms into its last
-         dot, which opens onto the hero. Built by js/main.js from the chart's
-         data-series; inert unless <html> has .intro-on. -->
+    <!-- INTRO: on arrival the LWX quote draws itself, then the camera flies
+         into its last print and that dot opens onto the hero. Plays on its
+         own; scrolling, a key or a tap hurries it along. Built by js/main.js
+         from the chart's data-series; inert unless <html> has .intro-on. -->
     <div class="intro" data-intro>
-      <div class="intro__pin">
-        <div class="intro__stage">
-          <div class="intro__quote wrap" aria-hidden="true">
-            <p class="intro__kicker">LWX &middot; The Luxury Watch Index</p>
-            <p class="intro__price">
-              <span class="intro__value" data-intro-value>1.1436</span>
-              <span class="intro__chg" data-intro-chg>&#9650; 14.36%</span>
-            </p>
-            <p class="intro__sub">Since 26 Nov 2025 &middot; built and updated by Benjamin Stone</p>
-          </div>
-          <div class="intro__plot wrap" data-intro-plot></div>
-          <button class="intro__cue" type="button" data-intro-enter>
-            <span>Scroll to enter</span>
-            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 4v12M4.5 10.5 10 16l5.5-5.5"/></svg>
-          </button>
+      <div class="intro__stage">
+        <div class="intro__quote wrap" aria-hidden="true">
+          <p class="intro__kicker">LWX &middot; The Luxury Watch Index</p>
+          <p class="intro__price">
+            <span class="intro__value" data-intro-value>1.1529</span>
+            <span class="intro__chg" data-intro-chg>&#9650; 15.29%</span>
+          </p>
+          <p class="intro__sub">Since 26 Nov 2025 &middot; built and updated by Benjamin Stone</p>
         </div>
-
-        <!-- HERO -->
-        <header class="hero on-brand" data-hero>
-          <div class="wrap hero__inner">
-            <div>
-              <p class="hero__tagline">Accounting &amp; Finance, University of Edinburgh</p>
-              <h1 class="hero__title">
-                <span class="row"><span>Benjamin</span></span>
-                <span class="row"><span>Stone</span></span>
-              </h1>
-              <p class="hero__lede">
-                I'm in my third year of Accounting and Finance at the University of Edinburgh.
-                I built an index of luxury watch resale prices that I still update, and
-                I&rsquo;ve written a research memo on how IAG accounts for its Avios points.
-              </p>
-              <div class="actions">
-                <a class="btn btn--light" href="assets/Benjamin_Stone_CV.pdf" download>Download CV</a>
-                <a class="link" href="mailto:benjystone2005@gmail.com">Email Benjamin</a>
-              </div>
-            </div>
-
-            <aside class="glance" aria-label="At a glance">
-              <p class="glance__title">The short version</p>
-              <dl class="glance__list">
-                <div class="glance__row">
-                  <dt>Internship</dt>
-                  <dd>Investment Banking Winter Intern, Investec, August 2026</dd>
-                  <svg class="tick" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4L16 5"/></svg>
-                </div>
-                <div class="glance__row">
-                  <dt>Degree</dt>
-                  <dd>Third year, Accounting and Finance at Edinburgh. First-class average so far</dd>
-                  <svg class="tick" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4L16 5"/></svg>
-                </div>
-                <div class="glance__row">
-                  <dt>Index</dt>
-                  <dd>The Luxury Watch Index, up 14.36% since November 2025</dd>
-                  <svg class="tick" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4L16 5"/></svg>
-                </div>
-                <div class="glance__row">
-                  <dt>Research</dt>
-                  <dd>IAG / Avios loyalty breakage memo, June 2026</dd>
-                  <svg class="tick" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4L16 5"/></svg>
-                </div>
-                <div class="glance__row">
-                  <dt>Sport</dt>
-                  <dd>Indoor Cricket World Cup champion with South Africa, 2018</dd>
-                  <svg class="tick" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4L16 5"/></svg>
-                </div>
-              </dl>
-            </aside>
-          </div>
-        </header>
+        <div class="intro__plot wrap" data-intro-plot></div>
       </div>
-      <div class="intro__runway"></div>
+
+      <!-- HERO -->
+      <header class="hero on-brand" data-hero>
+        <div class="wrap hero__inner">
+          <div>
+            <p class="hero__tagline">Accounting &amp; Finance, University of Edinburgh</p>
+            <!-- the name is redrawn in pixels by js/main.js; this text stays
+                 for screen readers, search and copying -->
+            <h1 class="hero__title" data-pixel-name>
+              <span class="row"><span>Benjamin</span></span>
+              <span class="row"><span>Stone</span></span>
+            </h1>
+            <p class="hero__lede">
+              I'm in my third year of Accounting and Finance at the University of Edinburgh.
+              I built an index of luxury watch resale prices that I still update, and
+              I&rsquo;ve written a research memo on how IAG accounts for its Avios points.
+            </p>
+            <div class="actions">
+              <a class="btn btn--light" href="assets/Benjamin_Stone_CV.pdf" download>Download CV</a>
+              <a class="link" href="mailto:benjystone2005@gmail.com">Email Benjamin</a>
+            </div>
+          </div>
+
+          <aside class="glance" aria-label="At a glance">
+            <p class="glance__title">The short version</p>
+            <dl class="glance__list">
+              <div class="glance__row">
+                <dt>Internship</dt>
+                <dd>Investment Banking Winter Intern, Investec, August 2026</dd>
+                <svg class="tick" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4L16 5"/></svg>
+              </div>
+              <div class="glance__row">
+                <dt>Degree</dt>
+                <dd>Third year, Accounting and Finance at Edinburgh. First-class average so far</dd>
+                <svg class="tick" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4L16 5"/></svg>
+              </div>
+              <div class="glance__row">
+                <dt>Index</dt>
+                <dd>The Luxury Watch Index, up 15.29% since November 2025</dd>
+                <svg class="tick" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4L16 5"/></svg>
+              </div>
+              <div class="glance__row">
+                <dt>Research</dt>
+                <dd>IAG / Avios loyalty breakage memo, June 2026</dd>
+                <svg class="tick" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4L16 5"/></svg>
+              </div>
+              <div class="glance__row">
+                <dt>Sport</dt>
+                <dd>Indoor Cricket World Cup champion with South Africa, 2018</dd>
+                <svg class="tick" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4L16 5"/></svg>
+              </div>
+            </dl>
+          </aside>
+        </div>
+      </header>
     </div>
 
     <!-- FIGURES TAPE -->
     <div class="tape" role="region" aria-label="Figures from my work" tabindex="0">
       <div class="tape__track">
         <ul class="tape__list">
-          <li><span class="tape__sym">LWX</span><span class="tape__val">1.1436</span><span class="tape__chg"><span aria-hidden="true">&#9650;</span> 14.36%</span></li>
+          <li><span class="tape__sym">LWX</span><span class="tape__val">1.1529</span><span class="tape__chg"><span aria-hidden="true">&#9650;</span> 15.29%</span></li>
           <li><span class="tape__sym">Avios liability</span><span class="tape__val">&euro;3,348m</span><span class="tape__chg"><span aria-hidden="true">&#9650;</span> 27% since 2022</span></li>
           <li><span class="tape__sym">Breakage sensitivity</span><span class="tape__val">&euro;103m</span><span class="tape__chg">per 5 pts</span></li>
           <li><span class="tape__sym">Investec DCF</span><span class="tape__val">R1.1bn</span><span class="tape__chg">FMCG acquisition</span></li>
@@ -142,7 +145,7 @@
           <li><span class="tape__sym">Investec intake</span><span class="tape__val">1 of 6</span><span class="tape__chg">interns</span></li>
         </ul>
         <ul class="tape__list" aria-hidden="true">
-          <li><span class="tape__sym">LWX</span><span class="tape__val">1.1436</span><span class="tape__chg">&#9650; 14.36%</span></li>
+          <li><span class="tape__sym">LWX</span><span class="tape__val">1.1529</span><span class="tape__chg">&#9650; 15.29%</span></li>
           <li><span class="tape__sym">Avios liability</span><span class="tape__val">&euro;3,348m</span><span class="tape__chg">&#9650; 27% since 2022</span></li>
           <li><span class="tape__sym">Breakage sensitivity</span><span class="tape__val">&euro;103m</span><span class="tape__chg">per 5 pts</span></li>
           <li><span class="tape__sym">Investec DCF</span><span class="tape__val">R1.1bn</span><span class="tape__chg">FMCG acquisition</span></li>
@@ -168,60 +171,80 @@
       </div>
     </section>
 
-    <!-- SELF-DIRECTED WORK -->
+    <!-- SELF-DIRECTED WORK: the projects sit on a checklist board; each is
+         ticked off as it scrolls into view. -->
     <section class="section" aria-labelledby="work-title">
       <div class="wrap">
-        <div class="section__head reveal-wipe" data-reveal>
-          <h2 class="section__title" id="work-title">My own projects</h2>
-          <p class="section__intro">Neither of these was for a course or a job. I did them in my own time.</p>
-        </div>
-
-        <div class="features">
-          <article class="feature">
-            <div class="feature__body">
-              <p class="meta">Live index · Running since November 2025</p>
-              <h3 class="feature__title">The Luxury Watch Index</h3>
-              <div class="feature__stat">
-                <p class="stat stat--total" data-total><span data-sign>+</span><span data-count="14.36" data-decimals="2" data-count-manual>14.36</span>%</p>
-                <p class="stat__caption">Since I started it in November 2025</p>
-              </div>
-              <p class="prose prose--muted">I built this index to follow resale prices for ten popular luxury watches. I update it two or three times a month using listings on Chrono24.</p>
-              <div class="actions">
-                <a class="link" href="/projects#lwx">See the project <span class="arrow" aria-hidden="true">&rarr;</span></a>
-                <a class="link" href="https://benjystone2005.github.io/The-Luxury-Watch-Index/luxury-watch-index.html" target="_blank" rel="noopener">View the live index</a>
-              </div>
+        <div class="board" data-board>
+          <div class="board__sheet">
+            <div class="board__top" aria-hidden="true">
+              <span>Checklist</span>
+              <span class="board__tally"><span class="board__meter"></span><span><span data-board-done>2</span> of 2 done</span></span>
             </div>
-            <!-- Update the index by adding [date, value] pairs to data-series. -->
-            <figure class="chart feature__media" data-chart
-              data-series='[["2025-11-26",1.0000],["2025-12-04",0.9945],["2025-12-13",1.0686],["2025-12-19",1.0815],["2026-01-08",1.0825],["2026-03-15",1.1213],["2026-03-22",1.1197],["2026-03-29",1.1234],["2026-04-05",1.1278],["2026-04-12",1.1226],["2026-04-20",1.1352],["2026-04-26",1.1266],["2026-05-03",1.1255],["2026-05-17",1.1231],["2026-05-24",1.1297],["2026-06-14",1.1436]]'>
-              <figcaption class="chart__head">
-                <span>LWX composite, rebased to 1.0000</span>
-                <span data-chart-range>26 Nov 2025 &ndash; 14 Jun 2026</span>
-              </figcaption>
-              <a class="shot" href="https://benjystone2005.github.io/The-Luxury-Watch-Index/luxury-watch-index.html" target="_blank" rel="noopener" aria-label="Open the live Luxury Watch Index" data-chart-fallback>
-                <img src="assets/img/lwx-live-index.jpg" width="1600" height="1075" loading="lazy" alt="The live Luxury Watch Index site: index value, year-to-date return, ten constituents and the composite performance chart." />
-              </a>
-              <p class="chart__source">Based on median asking prices for 10 watches on Chrono24.</p>
-            </figure>
-          </article>
-
-          <article class="feature feature--lilac feature--reverse">
-            <div class="feature__body">
-              <p class="meta">Research memo · June 2026</p>
-              <h3 class="feature__title">IAG / Avios: Loyalty Breakage Research Memo</h3>
-              <div class="feature__stat">
-                <p class="stat stat--total" data-total>&euro;<span data-count="103" data-decimals="0">103</span>m</p>
-                <p class="stat__caption">How much IAG&rsquo;s profit moves if its breakage estimate changes by 5 points, by IAG&rsquo;s own numbers</p>
-              </div>
-              <p class="prose prose--muted">When Avios points expire unused, IAG books their value as profit, based on its own estimate of how many will never be spent. I wanted to know how much profit rests on that estimate, and whether anyone outside the company checks it.</p>
-              <div class="actions">
-                <a class="link" href="/projects#iag">Read the research <span class="arrow" aria-hidden="true">&rarr;</span></a>
-              </div>
+            <div class="section__head reveal-wipe" data-reveal>
+              <h2 class="section__title" id="work-title">My own projects</h2>
+              <p class="section__intro">Neither of these was for a course or a job. I did them in my own time.</p>
             </div>
-            <a class="paper paper--link feature__media" data-parallax href="assets/IAG_Short_Thesis_Memo.pdf" target="_blank" rel="noopener" aria-label="Open the IAG memo (PDF)">
-              <img src="assets/img/iag-memo-page1.jpg" width="1081" height="1000" loading="lazy" alt="First page of the IAG investment memo: short thesis dated 26 June 2026, authored by Benjamin Stone." />
-            </a>
-          </article>
+
+            <ol class="board__list">
+              <li class="board__item" data-board-item>
+                <span class="board__check" aria-hidden="true">
+                  <span class="board__box"><svg viewBox="0 0 20 20"><path d="M4 10.5l4 4L16 5"/></svg></span>
+                  <span class="board__num">01</span>
+                </span>
+                <article class="feature">
+                  <div class="feature__body">
+                    <p class="meta">Live index · Running since November 2025</p>
+                    <h3 class="feature__title">The Luxury Watch Index</h3>
+                    <div class="feature__stat">
+                      <p class="stat stat--total" data-total><span data-sign>+</span><span data-count="15.29" data-decimals="2" data-count-manual>15.29</span>%</p>
+                      <p class="stat__caption">Since I started it in November 2025</p>
+                    </div>
+                    <p class="prose prose--muted">I built this index to follow resale prices for ten popular luxury watches. I update it two or three times a month using listings on Chrono24.</p>
+                    <div class="actions">
+                      <a class="link" href="/projects#lwx">See the project <span class="arrow" aria-hidden="true">&rarr;</span></a>
+                      <a class="link" href="https://benjystone2005.github.io/The-Luxury-Watch-Index/luxury-watch-index.html" target="_blank" rel="noopener">View the live index</a>
+                    </div>
+                  </div>
+                  <!-- Update the index by adding [date, value] pairs to data-series. -->
+                  <figure class="chart feature__media" data-chart
+                    data-series='[["2025-11-26",1.0000],["2025-12-04",0.9945],["2025-12-13",1.0686],["2025-12-19",1.0815],["2026-01-08",1.0825],["2026-03-15",1.1213],["2026-03-22",1.1197],["2026-03-29",1.1234],["2026-04-05",1.1278],["2026-04-12",1.1226],["2026-04-20",1.1352],["2026-04-26",1.1266],["2026-05-03",1.1255],["2026-05-17",1.1231],["2026-05-24",1.1297],["2026-06-14",1.1436],["2026-09-13",1.1529]]'>
+                    <figcaption class="chart__head">
+                      <span>LWX composite, rebased to 1.0000</span>
+                      <span data-chart-range>26 Nov 2025 &ndash; 13 Sep 2026</span>
+                    </figcaption>
+                    <a class="shot" href="https://benjystone2005.github.io/The-Luxury-Watch-Index/luxury-watch-index.html" target="_blank" rel="noopener" aria-label="Open the live Luxury Watch Index" data-chart-fallback>
+                      <img src="assets/img/lwx-live-index.jpg" width="1600" height="1075" loading="lazy" alt="The live Luxury Watch Index site: index value, year-to-date return, ten constituents and the composite performance chart." />
+                    </a>
+                    <p class="chart__source">Based on median asking prices for 10 watches on Chrono24.</p>
+                  </figure>
+                </article>
+              </li>
+              <li class="board__item" data-board-item>
+                <span class="board__check" aria-hidden="true">
+                  <span class="board__box"><svg viewBox="0 0 20 20"><path d="M4 10.5l4 4L16 5"/></svg></span>
+                  <span class="board__num">02</span>
+                </span>
+                <article class="feature feature--lilac feature--reverse">
+                  <div class="feature__body">
+                    <p class="meta">Research memo · June 2026</p>
+                    <h3 class="feature__title">IAG / Avios: Loyalty Breakage Research Memo</h3>
+                    <div class="feature__stat">
+                      <p class="stat stat--total" data-total>&euro;<span data-count="103" data-decimals="0">103</span>m</p>
+                      <p class="stat__caption">How much IAG&rsquo;s profit moves if its breakage estimate changes by 5 points, by IAG&rsquo;s own numbers</p>
+                    </div>
+                    <p class="prose prose--muted">When Avios points expire unused, IAG books their value as profit, based on its own estimate of how many will never be spent. I wanted to know how much profit rests on that estimate, and whether anyone outside the company checks it.</p>
+                    <div class="actions">
+                      <a class="link" href="/projects#iag">Read the research <span class="arrow" aria-hidden="true">&rarr;</span></a>
+                    </div>
+                  </div>
+                  <a class="paper paper--link feature__media" data-parallax href="assets/IAG_Short_Thesis_Memo.pdf" target="_blank" rel="noopener" aria-label="Open the IAG memo (PDF)">
+                    <img src="assets/img/iag-memo-page1.jpg" width="1081" height="1000" loading="lazy" alt="First page of the IAG investment memo: short thesis dated 26 June 2026, authored by Benjamin Stone." />
+                  </a>
+                </article>
+              </li>
+            </ol>
+          </div>
         </div>
       </div>
     </section>

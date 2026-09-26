@@ -1634,71 +1634,6 @@ a.shot:hover img {
   background: linear-gradient(to left, oklch(0.36 0.07 168 / 0.4), transparent);
 }
 
-/* ================= zebra herd (Experience, Investec) ================= */
-
-.zebra-herd {
-  position: fixed;
-  inset: auto 0 0;
-  z-index: var(--z-overlay);
-  height: 240px;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.zebra {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-}
-.zebra svg {
-  display: block;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-}
-
-.zb-w { fill: var(--white); }
-.zb-k { fill: var(--ink); }
-.zb-line { fill: none; stroke: var(--ink); }
-.zb-edge { fill: var(--ink); stroke: var(--ink); stroke-width: 2.6; stroke-linejoin: round; }
-.zb-mane { fill: none; stroke: var(--white); stroke-width: 5; }
-.zb-shadow { fill: oklch(0.21 0.02 165 / 0.12); }
-/* the far legs sit in the body's shade */
-.zb-far .zb-w { fill: oklch(0.86 0.008 160); }
-
-/* lateral four-beat walk, each leg a quarter cycle behind the last; a hoof
-   lifts as it swings forward, then is planted and carried back */
-.zb-leg,
-.zb-tail {
-  transform-box: view-box;
-  transform-origin: 0 0;
-}
-.zb-leg {
-  animation: zb-step calc(var(--gait) * 2) linear infinite;
-  animation-delay: calc(var(--phase) - var(--gait) * var(--lead));
-}
-.zb-trunk {
-  animation: zb-bob var(--gait) ease-in-out infinite;
-  animation-delay: var(--phase);
-}
-.zb-tail {
-  animation: zb-tail calc(var(--gait) * 4) ease-in-out infinite alternate;
-}
-
-@keyframes zb-step {
-  0%   { transform: translateY(0) rotate(26deg); animation-timing-function: cubic-bezier(0.45, 0, 0.55, 1); }
-  25%  { transform: translateY(-4px) rotate(0deg); animation-timing-function: cubic-bezier(0.45, 0, 0.55, 1); }
-  50%  { transform: translateY(0) rotate(-26deg); }
-  100% { transform: translateY(0) rotate(26deg); }
-}
-@keyframes zb-bob {
-  50% { transform: translateY(-1.5px); }
-}
-@keyframes zb-tail {
-  from { transform: rotate(-2deg); }
-  to   { transform: rotate(16deg); }
-}
-
 /* ================= motion ================= */
 
 @media (prefers-reduced-motion: no-preference) {
@@ -2003,9 +1938,6 @@ a.shot:hover img {
     overflow-x: auto;
   }
   .tape__list + .tape__list {
-    display: none;
-  }
-  .zebra-herd {
     display: none;
   }
   *,

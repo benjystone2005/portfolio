@@ -60,7 +60,6 @@ Rule: green is the committed brand colour; lilac is a surface tint only. No thir
 - Interior scroll: group titles are ruled in like the home section titles; each entry's top rule is drawn, then its date, heading and points follow in a short stagger; headline figures on Projects are ruled in one by one; skill and interest tags come in one after another. Entrances fade up out of a slight blur. The Projects memo page has the home page's parallax. The cricket ball's seam rolls with the page and coasts to a stop; the light on it stays put.
 - Scroll reveals are armed by JS only when IntersectionObserver exists and motion is allowed; content is visible by default.
 - Stat numerals count up once. LWX clock keeps live time. Plane flyover once per visit.
-- Zebra herd (Experience): the first time an Investec entry comes into view, a herd of nine zebras (one a foal) walks left to right along the bottom of the screen, drawn in ink and white. The back of the herd is smaller, higher and a touch slower; legs swing in a four-beat walk timed to the ground covered. Once per page view, decorative (`aria-hidden`, no pointer events), removed when the last one is off screen.
 - Everything collapses under `prefers-reduced-motion`.
 
 ## Don'ts

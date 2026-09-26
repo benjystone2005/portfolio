@@ -1684,15 +1684,20 @@ a.shot:hover img {
   }
 
   /* interior pages speak the home page's ledger language: group titles are
-     ruled in; each entry's top rule is drawn, then its lines follow */
-  .js-reveal .group__title.reveal {
-    clip-path: inset(0 0 -0.25em 0);
-    transition: clip-path 1.1s var(--ease-out-expo);
-  }
+     ruled in; each entry's top rule is drawn, then its lines follow. The
+     wipe clips the text inside the title, never the title itself: a fully
+     clipped target never reports itself on screen, so it would stay hidden */
   .js-reveal .group__title.reveal:not(.in-view) {
     opacity: 1;
     transform: none;
     filter: none;
+  }
+  .js-reveal .group__title.reveal > span {
+    display: inline-block;
+    clip-path: inset(0 0 -0.25em 0);
+    transition: clip-path 1.1s var(--ease-out-expo);
+  }
+  .js-reveal .group__title.reveal:not(.in-view) > span {
     clip-path: inset(0 100% -0.25em 0);
   }
 
